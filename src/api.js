@@ -67,4 +67,3 @@ export const getAllUsers = async (token, searchTerm = '') => {
   return res.json();
 };
 
-  
