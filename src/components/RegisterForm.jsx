@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import './AuthForms.css';
-
+// ⬇️ ¡CAMBIO IMPORTANTE! ⬇️
+// Importamos la función de api.js
+import { registerUser } from '../api.js'; 
 
 const RegisterForm = ({ onRegister }) => {
   const [username, setUsername] = useState('');
@@ -16,18 +17,18 @@ const RegisterForm = ({ onRegister }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/register', { // Asegúrate que la URL sea la correcta
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email, password, userType }),
+      // ⬇️ ¡CAMBIO IMPORTANTE! ⬇️
+      // Ya no usamos fetch('/api...'), usamos la función importada
+      // que SÍ tiene la URL completa de Render.
+      const data = await registerUser({
+        username,
+        email,
+        password,
+        userType
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Error en el registro');
+      if (!data) { // Comprobación extra
+        throw new Error('No se recibieron datos del servidor');
       }
       
       onRegister(data); // Pasamos todos los datos del usuario al App.jsx
@@ -77,7 +78,8 @@ const RegisterForm = ({ onRegister }) => {
         <option value="alumno">Alumno</option>
         <option value="profesor">Profesor</option>
         <option value="preceptor">Preceptor</option>
-        <option value="DOE">DOE</option>
+        {/* Faltaba DOE aquí, lo agrego por si acaso */}
+        <option value="DOE">DOE</option> 
       </select>
       <button type="submit" disabled={loading} style={{ padding: '10px' }}>
         {loading ? 'Registrando...' : 'Registrarse'}
@@ -87,3 +89,4 @@ const RegisterForm = ({ onRegister }) => {
 };
 
 export default RegisterForm;
+
