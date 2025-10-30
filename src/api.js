@@ -1,82 +1,110 @@
-// --- CORRECCIÓN: Usamos la URL completa del servidor para evitar problemas de conexión (CORS / Failed to fetch) ---
-const API_BASE = 'https://chat-backend-zjq4.onrender.com/api';
+// --- chat/src/api.js ---
+// Usamos la URL de Render que ya está desplegada
+const API_BASE_URL = 'https://chat-backend-zjq4.onrender.com';
 
-export const registerUser = async (data) => {
-  const res = await fetch(`${API_BASE}/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.error || 'Error en el registro');
-  }
-  return res.json();
-};
-
-export const loginUser = async (credentials) => {
-  const response = await fetch(`${API_BASE}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(credentials),
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || 'Error en autenticación');
-  }
-  return response.json();
-};
-
-export const getMessages = async (token, chatType) => {
-  const res = await fetch(`${API_BASE}/messages/${chatType}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.error || 'Error al obtener mensajes');
-  }
-  return res.json();
-};
-
-export const sendMessage = async (token, messageData) => {
-  const res = await fetch(`${API_BASE}/messages`, {
-    method: 'POST',
+// Función genérica para manejar las peticiones fetch
+const apiFetch = async (endpoint, method = 'GET', body = null, token = null) => {
+  const url = `${API_BASE_URL}/api${endpoint}`;
+  const options = {
+    method,
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(messageData),
-  });
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.error || 'Error al enviar mensaje');
+  };
+
+  if (body) {
+    options.body = JSON.stringify(body);
   }
-  return res.json();
-};
 
-export const getAllUsers = async (token, searchTerm = '') => {
-  const url = `${API_BASE}/users${searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : ''}`;
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.error || 'Error al obtener la lista de usuarios');
+  if (token) {
+    options.headers['Authorization'] = `Bearer ${token}`;
   }
-  return res.json();
-};
-export const getAlumnos = () => {
-  // Nota: Tu backend 'alumnosRoutes.js' no pide autenticación,
-  // por eso no pasamos un token.
-  return apiFetch('/alumnos', 'GET');
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || data.message || 'Error en la petición a la API');
+    }
+    
+    return data;
+  } catch (error) {
+    console.error(`Error en apiFetch (${endpoint}):`, error.message);
+    throw error;
+  }
 };
 
-export const createAlumno = (alumnoData) => {
-  return apiFetch('/alumnos', 'POST', alumnoData);
+// --- Autenticación (Funciones existentes) ---
+export const registerUser = (userData) => {
+  return apiFetch('/auth/register', 'POST', userData);
+};
+
+export const loginUser = (credentials) => {
+  return apiFetch('/auth/login', 'POST', credentials);
+};
+
+// --- Usuarios (Función existente) ---
+export const getAllUsers = (token, searchTerm = '') => {
+  return apiFetch(`/users?search=${searchTerm}`, 'GET', null, token);
+};
+
+// --- Mensajes (No la necesitamos aquí, pero estaría bien moverla) ---
+// (Tu lógica de mensajes está en otro lado, la omitimos por ahora)
+
+// --- ¡NUEVO! Alumnos (Para RegistroDOE) ---
+// --- CORRECCIÓN: Reescribimos las funciones para no depender de 'apiFetch' y evitar el error ---
+export const getAlumnos = async () => {
+  const url = `${API_BASE_URL}/api/alumnos`;
+  try {
+    const response = await fetch(url, { method: 'GET' });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || data.message || 'Error al obtener alumnos');
+    }
+    return data;
+  } catch (error) {
+    console.error(`Error en getAlumnos:`, error.message);
+    throw error;
+  }
+};
+
+export const createAlumno = async (alumnoData) => {
+  const url = `${API_BASE_URL}/api/alumnos`;
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(alumnoData),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || data.message || 'Error al crear alumno');
+    }
+    return data;
+  } catch (error) {
+    console.error(`Error en createAlumno:`, error.message);
+    throw error;
+  }
 };
 
 // --- ¡NUEVO! Observaciones (Para AlumnoDetalle) ---
-export const addObservacion = (alumnoId, observacionData) => {
-  return apiFetch(`/alumnos/${alumnoId}/observaciones`, 'POST', observacionData);
+export const addObservacion = async (alumnoId, observacionData) => {
+  const url = `${API_BASE_URL}/api/alumnos/${alumnoId}/observaciones`;
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(observacionData),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || data.message || 'Error al agregar observación');
+    }
+    return data;
+  } catch (error) {
+    console.error(`Error en addObservacion:`, error.message);
+    throw error;
+  }
 };
+
