@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-// import './AuthForms.css'; // Se elimina esta línea para corregir el error
+// 1. CORRECCIÓN: Subimos un nivel (de 'components' a 'src')
+import { loginUser } from '../api.js'; 
+// 2. CORRECCIÓN: Subimos un nivel (asumiendo que está en 'src/')
+import './AuthForms.css'; 
 
-// 1. Eliminamos 'onCambioRegistro' de los props
 const LoginForm = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,21 +16,11 @@ const LoginForm = ({ onLogin }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al iniciar sesión');
-      }
+      // 3. ¡AQUÍ ESTÁ LA CORRECCIÓN! 
+      // Usamos la función importada 'loginUser' que apunta a Render
+      const data = await loginUser({ email, password });
       
-      onLogin(data); 
+      onLogin(data); // Avisa a App.jsx que el login fue exitoso
 
     } catch (err) {
       setError(err.message);
@@ -43,14 +35,14 @@ const LoginForm = ({ onLogin }) => {
           <h2>Iniciar Sesión</h2>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           <input
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ marginBottom: '10px', padding: '8px' }}
-          />
-          <input
+        type="email"
+        placeholder="Correo electrónico"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        style={{ marginBottom: '10px', padding: '8px' }}
+      />
+      <input
             type="password"
             placeholder="Contraseña"
             value={password}
@@ -62,10 +54,10 @@ const LoginForm = ({ onLogin }) => {
             {loading ? 'Ingresando...' : 'Ingresar'}
           </button>
         </form>
-        {/* 2. Botón de registro del DOE eliminado de aquí */}
       </div>
   );
 };
 
 export default LoginForm;
+
 
