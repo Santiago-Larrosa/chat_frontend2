@@ -66,4 +66,17 @@ export const getAllUsers = async (token, searchTerm = '') => {
   }
   return res.json();
 };
+export const getAlumnos = () => {
+  // Nota: Tu backend 'alumnosRoutes.js' no pide autenticación,
+  // por eso no pasamos un token.
+  return apiFetch('/alumnos', 'GET');
+};
 
+export const createAlumno = (alumnoData) => {
+  return apiFetch('/alumnos', 'POST', alumnoData);
+};
+
+// --- ¡NUEVO! Observaciones (Para AlumnoDetalle) ---
+export const addObservacion = (alumnoId, observacionData) => {
+  return apiFetch(`/alumnos/${alumnoId}/observaciones`, 'POST', observacionData);
+};
