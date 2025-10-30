@@ -1,7 +1,7 @@
 import { useState } from 'react';
 // 1. Asegúrate de que importa la función de api.js
 // CORRECCIÓN: La ruta correcta es ../../api.js (asumiendo que api.js está en la raíz, fuera de 'src/')
-import { registerUser } from '../../api.js'; 
+import { registerUser } from '../api.js'; 
 
 function RegisterForm({ onRegister }) {
   const [username, setUsername] = useState('');
