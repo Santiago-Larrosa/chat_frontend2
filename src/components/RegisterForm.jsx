@@ -1,5 +1,8 @@
 import { useState } from 'react';
+// CORRECCIÓN: Asumiendo 'api.js' está en 'src/'
 import { registerUser } from '../api.js'; 
+// CORRECCIÓN: Asumiendo 'AuthForms.css' está en la MISMA CARPETA ('src/components/')
+import './AuthForms.css'; 
 
 function RegisterForm({ onRegister }) {
   const [username, setUsername] = useState('');
@@ -10,15 +13,18 @@ function RegisterForm({ onRegister }) {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-    // 2. ¡ESTA LÍNEA ES LA SOLUCIÓN CRÍTICA!
-    // Previene que el formulario recargue la página.
     e.preventDefault(); 
     
+    // --- ¡LA PRUEBA CLAVE! ---
+    // Esto debe aparecer en tu consola del navegador (F12)
+    console.log('¡handleSubmit SE ESTÁ EJECUTANDO!');
+    // ------------------------
+
     setError('');
     setLoading(true);
 
     try {
-      // 3. Llama a la función de la API (con la URL de Render)
+      console.log('Enviando datos a la API...');
       const data = await registerUser({ 
         username, 
         email, 
@@ -26,17 +32,20 @@ function RegisterForm({ onRegister }) {
         userType 
       });
 
+      console.log('Respuesta recibida:', data);
       onRegister(data); // Avisa a App.jsx que el registro fue exitoso
 
     } catch (err) {
+      console.error('Error en el bloque catch:', err);
       setError(err.message);
     } finally {
+      console.log('Bloque finally: setLoading(false)');
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', margin: 'auto' }}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', margin: 'auto' }}>
       <h2>Registro</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <input
@@ -72,13 +81,12 @@ function RegisterForm({ onRegister }) {
         <option value="alumno">Alumno</option>
         <option value="profesor">Profesor</option>
         <option value="preceptor">Preceptor</option>
-        {/* AÑADIDO: La opción DOE que tenías */}
         <option value="DOE">DOE</option>
       </select>
       <button type="submit" disabled={loading} style={{ padding: '10px' }}>
         {loading ? 'Registrando...' : 'Registrarse'}
       </button>
-    </div>
+    </form>
   );
 }
 
