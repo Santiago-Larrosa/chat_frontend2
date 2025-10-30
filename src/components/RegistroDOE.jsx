@@ -1,5 +1,10 @@
-﻿import { useState, useEffect } from 'react';
-import AlumnoDetalle from './AlumnoDetalle'; // Importamos el componente de detalle
+// 1. ¡CORRECCIÓN! Faltaban useState y useEffect
+import { useState, useEffect } from 'react';
+import AlumnoDetalle from './AlumnoDetalle'; 
+// 2. ¡CORRECCIÓN! Importamos las funciones de api.js
+import { getAlumnos, createAlumno } from '../api.js'; 
+// Asumo que tu AuthForms.css está en la misma carpeta
+import './AuthForms.css'; 
 
 function RegistroDOE({ onBack }) {
     const [alumnos, setAlumnos] = useState([]);
@@ -14,16 +19,13 @@ function RegistroDOE({ onBack }) {
         tutor: ""
     });
     const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
-    const [error, setError] = useState(""); // Estado para mensajes de error
+    const [error, setError] = useState(""); 
 
-    // 🔹 Cargar alumnos desde la API al montar el componente
+    // 🔹 Cargar alumnos (AHORA USA api.js)
     const cargarAlumnos = () => {
         setError("");
-        fetch('/api/alumnos')
-            .then(res => {
-                if (!res.ok) throw new Error("Error al cargar datos");
-                return res.json();
-            })
+        // 3. ¡CORRECCIÓN! Usamos la función de la API
+        getAlumnos()
             .then(data => setAlumnos(data))
             .catch(err => {
                 console.error('Error al cargar alumnos:', err);
@@ -48,25 +50,11 @@ function RegistroDOE({ onBack }) {
         }
 
         try {
-            const res = await fetch('/api/alumnos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(nuevoAlumno)
-            });
-
-            // --- ¡LA CLAVE ESTÁ AQUÍ! ---
-            // Comprobamos si la respuesta fue exitosa
-            if (!res.ok) {
-                const errData = await res.json();
-                throw new Error(errData.error || 'Error al guardar el alumno');
-            }
-
-            // Si todo salió bien, el 'data' es el alumno guardado
-            const data = await res.json();
+            // 4. ¡CORRECCIÓN! Usamos la función de la API
+            const data = await createAlumno(nuevoAlumno);
+            
             setAlumnos([...alumnos, data]); // Agregamos el alumno real a la lista
-
-            // Limpiamos el formulario
-            setNuevoAlumno({
+            setNuevoAlumno({ // Limpiamos el formulario
                 nombre: "", curso: "", fecha: "", dni: "",
                 edad: "", direccion: "", telefono: "", tutor: ""
             });
@@ -80,33 +68,30 @@ function RegistroDOE({ onBack }) {
         setAlumnoSeleccionado(alumno);
     };
 
-    // Esta función permite que AlumnoDetalle actualice la lista
     const handleActualizarAlumno = (alumnoActualizado) => {
         setAlumnos(alumnos.map(a => a._id === alumnoActualizado._id ? alumnoActualizado : a));
-        setAlumnoSeleccionado(alumnoActualizado); // Mantenemos el detalle abierto
+        setAlumnoSeleccionado(alumnoActualizado); 
     };
 
-    // Si hay un alumno seleccionado, mostramos el detalle
     if (alumnoSeleccionado) {
         return (
             <AlumnoDetalle
                 alumno={alumnoSeleccionado}
                 onBack={() => setAlumnoSeleccionado(null)}
-                onUpdate={handleActualizarAlumno} // Pasamos la función de actualizar
+                onUpdate={handleActualizarAlumno} 
             />
         );
     }
 
-    // Vista principal (lista y formulario)
+    // (El resto de tu JSX es idéntico y está perfecto)
     return (
-        <div className="registro-container">
+        <div className="registro-container"> 
             <h2>Registro DOE</h2>
             <button onClick={onBack}>Volver</button>
 
             {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
 
             <form onSubmit={handleAgregar} className="registro-form">
-                {/* (Tu formulario no cambia) */}
                 <input name="nombre" placeholder="Nombre del alumno" value={nuevoAlumno.nombre} onChange={handleChange} />
                 <input name="curso" placeholder="Curso" value={nuevoAlumno.curso} onChange={handleChange} />
                 <input type="date" name="fecha" value={nuevoAlumno.fecha} onChange={handleChange} />
@@ -122,7 +107,6 @@ function RegistroDOE({ onBack }) {
             <ul className="registro-lista">
                 {alumnos.map((a) => (
                     <li key={a._id}>
-                        {/* Ahora 'a.nombre' y 'a.curso' deberían tener datos */}
                         <strong>{a.nombre}</strong> ({a.curso})
                         <button onClick={() => handleAbrirAlumno(a)}>Ver registro</button>
                     </li>
@@ -133,3 +117,4 @@ function RegistroDOE({ onBack }) {
 }
 
 export default RegistroDOE;
+
