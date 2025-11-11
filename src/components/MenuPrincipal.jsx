@@ -56,6 +56,7 @@
     };
 
     const userType = user?.userType;
+      const canManageReports = userType === 'DOE' || userType === 'regente';
     // --- ¡CAMBIO CRÍTICO! ---
   // Eliminamos las variables de permisos (canSeeProfesores, etc.)
   // ya que esos chats ya no existen.
@@ -102,17 +103,19 @@
       
       {/* Otras Opciones */}
       <div className="menu-buttons" style={{ marginTop: '20px' }}>
-        {canManageReports && (
-          <button onClick={() => onNavigate('informes')}>
-            Gestionar Informes
-          </button>
-        )}
+        
         {/* --- ¡CAMBIO CRÍTICO! --- */}
         {/* Eliminamos el botón 'Ver Informe' que dependía de los alumnos */}
           <button onClick={() => onNavigate('informe')}>Ver Informe</button>
         {userType === 'DOE' && (
           <button onClick={() => onNavigate('registro')}>
             Registrar Usuario (DOE)
+          </button>
+        )}
+
+        {canManageReports && (
+          <button onClick={() => onNavigate('informes')}>
+            Gestionar Informes
           </button>
         )}
         <button onClick={onLogout}>Cerrar Sesión</button>
@@ -122,6 +125,7 @@
 };
 
   export default MenuPrincipal;
+
 
 
 
