@@ -3,7 +3,6 @@ import { getMessages, sendMessage } from '../api';
 import './Chat.css';
 
 
-// --- CAMBIO 1: El componente ahora recibe 'allUsers' ---
 function Chat({ user, chatType, allUsers, onBack, onLogout }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -17,7 +16,8 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
   const chatTitle = useMemo(() => {
     if (chatType.includes('_')) {
       const otherUserId = chatType.split('_').find(id => id !== user.id);
-      const otherUser = allUsers.find(u => u._id === otherUserId);
+      // Asegúrate de que allUsers exista antes de usar 'find'
+      const otherUser = allUsers?.find(u => u._id === otherUserId);
       return otherUser ? `Chat con ${otherUser.username}` : 'Chat Privado';
     }
     return `Chat de ${capitalize(chatType)}`;
@@ -29,10 +29,12 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
 
     const loadMessages = async () => {
       try {
+        setError(null); // Limpiar error anterior
         const data = await getMessages(user.token, chatType);
         setMessages(data);
       } catch (err) {
         setError("No se pudieron cargar los mensajes.");
+        console.error(err); // Añadido para depuración
       }
     };
     
@@ -67,16 +69,21 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
     };
   
     try {
+      // Actualización optimista: añade el mensaje temporalmente
       setMessages(prev => [...prev, { _id: tempId, ...messageData, isTemp: true }]);
       setInput('');
   
+      // Envía el mensaje real
       const saved = await sendMessage(user.token, messageData);
   
-      setMessages(prev => prev.map(msg => msg._id === tempId ? saved : msg));
+      // Reemplaza el mensaje temporal con el mensaje guardado del servidor
+      setMessages(prev => prev.map(msg => (msg._id === tempId ? saved : msg)));
   
     } catch (err) {
+      // Si falla, quita el mensaje temporal
       setMessages(prev => prev.filter(msg => msg._id !== tempId));
       setError('Error al enviar. Intenta nuevamente.');
+      console.error(err); // Añadido para depuración
     } finally {
       setIsSending(false);
     }
@@ -101,11 +108,23 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
           <p>Aún no hay mensajes en este chat.</p>
         ) : (
           messages.map((msg) => (
+            // --- INICIO DE LA ACTUALIZACIÓN (HORA DE ENVÍO) ---
             <div key={msg._id} className={`message ${msg.isTemp ? 'sending' : ''}`}>
-              <strong>{msg.author}</strong> 
-              <span className="user-type">({capitalize(msg.userType || 'Usuario')}):</span> 
-              <p>{msg.content}</p>
+              <div className="message-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                <div>
+                  <strong>{msg.author}</strong> 
+                  <span className="user-type"> ({capitalize(msg.userType || 'Usuario')}):</span> 
+                </div>
+                <span className="message-time" style={{ fontSize: '0.75rem', color: '#888', marginLeft: '10px' }}>
+                  {/* Verificamos si 'createdAt' existe (los mensajes del servidor lo tienen) */}
+                  {msg.createdAt 
+                    ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+                    : 'Enviando...'}
+                </span>
+              </div>
+              <p style={{ margin: '4px 0 0' }}>{msg.content}</p>
             </div>
+            // --- FIN DE LA ACTUALIZACIÓN ---
           ))
         )}
       </div>
