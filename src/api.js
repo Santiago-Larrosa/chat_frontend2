@@ -149,5 +149,5 @@ export const getInformes = async (token, searchTerm = '') => {
   }
   return res.json();
 };
-};
+
 
