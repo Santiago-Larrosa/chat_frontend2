@@ -121,5 +121,33 @@ export const addObservacion = async (alumnoId, observacionData) => {
     console.error(`Error en addObservacion:`, error.message);
     throw error;
   }
+
+  export const createInforme = async (token, informeData) => {
+  const res = await fetch(`${API_BASE}/informes`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(informeData),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Error al crear el informe');
+  }
+  return res.json();
+};
+
+export const getInformes = async (token, searchTerm = '') => {
+  const url = `${API_BASE}/informes${searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : ''}`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Error al buscar informes');
+  }
+  return res.json();
+};
 };
 
