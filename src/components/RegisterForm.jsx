@@ -45,48 +45,51 @@ function RegisterForm({ onRegister }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', margin: 'auto' }}>
-      <h2>Registro</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <input
-        type="text"
-        placeholder="Nombre de usuario"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        required
-        style={{ marginBottom: '10px', padding: '8px' }}
-      />
-      <input
-        type="email"
-        placeholder="Correo electrónico"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        style={{ marginBottom: '10px', padding: '8px' }}
-      />
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-        style={{ marginBottom: '10px', padding: '8px' }}
-      />
-      <label htmlFor="userType">Tipo de Usuario:</label>
+    <div className="auth-form-container"> {/* <div> de apertura agregado */}
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', margin: 'auto' }}>
+        <h2>Registro</h2>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <input
+          type="text"
+          placeholder="Nombre de usuario"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          style={{ marginBottom: '10px', padding: '8px' }}
+        />
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{ marginBottom: '10px', padding: '8px' }}
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          style={{ marginBottom: '10px', padding: '8px' }}
+        />
+        <label htmlFor="userType" style={{ marginBottom: '5px' }}>Tipo de Usuario:</label>
         <select
           id="userType"
           value={userType}
           onChange={(e) => setUserType(e.target.value)}
           required
+          style={{ marginBottom: '15px', padding: '8px' }}
         >
           <option value="regente">Regente</option>
           <option value="DOE">DOE (Admin)</option>
           {/* Opciones 'alumno', 'profesor', 'preceptor' eliminadas */}
         </select>
         
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} style={{ padding: '10px', marginBottom: '10px' }}>
           {loading ? 'Registrando...' : 'Registrar'}
         </button>
+        {/* El botón 'onBack' ahora funcionará porque lo agregamos a los props */}
         <button type="button" onClick={onBack} className="auth-toggle-btn">
           Volver al Menú
         </button>
@@ -94,6 +97,7 @@ function RegisterForm({ onRegister }) {
     </div>
   );
 };
+
 export default RegisterForm;
 
 
