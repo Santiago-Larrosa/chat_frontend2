@@ -4,7 +4,8 @@ import { registerUser } from '../api.js';
 // CORRECCIÓN: Asumiendo 'AuthForms.css' está en la MISMA CARPETA ('src/components/')
 import './AuthForms.css'; 
 
-function RegisterForm({ onRegister }) {
+function RegisterForm({ onRegister, onBack }) {
+ 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
