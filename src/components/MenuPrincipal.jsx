@@ -105,7 +105,6 @@
         
         {/* --- ¡CAMBIO CRÍTICO! --- */}
         {/* Eliminamos el botón 'Ver Informe' que dependía de los alumnos */}
-        <div className="menu-buttons" style={{marginTop: '20px'}}>
           <button onClick={() => onNavigate('informe')}>Ver Informe</button>
         {userType === 'DOE' && (
           <button onClick={() => onNavigate('registro')}>
@@ -119,6 +118,7 @@
 };
 
   export default MenuPrincipal;
+
 
 
 
