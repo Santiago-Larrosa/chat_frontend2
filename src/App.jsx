@@ -64,7 +64,12 @@ function App() {
         localStorage.removeItem('user');
         setView('login');
     };
-
+     const handleNavigate = (targetView, targetChatType = null) => {
+    setView(targetView);
+    if (targetChatType) {
+      setChatType(targetChatType);
+    }
+  };
     const navigate = (newView, chatType = 'general') => {
         if (newView === 'chat') {
             setCurrentChat(chatType);
@@ -131,6 +136,14 @@ function App() {
                     onBack={() => setView(user ? 'chat' : 'login')}
                 />
             )}
+
+            {/* --- 2. AÑADIR EL RENDERIZADO DEL NUEVO COMPONENTE --- */}
+      {view === 'informes' && (
+        <GestionInformes
+          user={user}
+          onBack={() => setView('menu')}
+        />
+      )}
         </div>
     );
 }
