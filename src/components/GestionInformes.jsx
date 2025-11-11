@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 // Asumiendo que api.js está en src/ (un nivel arriba)
-import { getInformes, createInforme } from '../api.js';
+import { getInformes, createInforme } from '/src/api.js';
 // Asumiendo que AuthForms.css está en src/components/
 import './AuthForms.css'; 
+
+
 
 function GestionInformes({ user, onBack }) {
   const [nombre, setNombre] = useState('');
