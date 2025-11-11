@@ -121,7 +121,7 @@ export const addObservacion = async (alumnoId, observacionData) => {
     console.error(`Error en addObservacion:`, error.message);
     throw error;
   }
-
+};
   export const createInforme = async (token, informeData) => {
   const res = await fetch(`${API_BASE}/informes`, {
     method: 'POST',
