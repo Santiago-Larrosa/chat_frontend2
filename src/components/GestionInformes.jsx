@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 // Asumiendo que api.js está en src/ (un nivel arriba)
-import { getInformes, createInforme } from '/.../api.js';
+import { getInformes, createInforme } from '../api.js';
 // Asumiendo que AuthForms.css está en src/components/
 import './AuthForms.css'; 
 
