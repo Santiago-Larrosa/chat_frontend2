@@ -5,6 +5,7 @@ import Chat from './components/Chat';
 import Informe from './components/Informe';
 import MenuPrincipal from './components/MenuPrincipal';
 import RegistroDOE from './components/RegistroDOE';
+import GestionInformes from './components/GestionInformes.jsx';
 import { getAllUsers } from './api'; // Importamos la API
 
 function App() {
