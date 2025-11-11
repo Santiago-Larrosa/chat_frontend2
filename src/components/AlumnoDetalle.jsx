@@ -30,6 +30,21 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
             setError(err.message);
         }
     };
+    
+    // --- NUEVA FUNCIÓN ---
+    // Pequeña función para formatear la fecha y hora
+    const formatFecha = (isoString) => {
+        if (!isoString) return 'Fecha desconocida';
+        const fecha = new Date(isoString);
+        // Formato: "11/11/2025, 14:30 hs"
+        return fecha.toLocaleString('es-AR', {
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
 
     return (
         <div className="registro-container">
@@ -49,7 +64,10 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
                 {alumno.observaciones && alumno.observaciones.length > 0 ? (
                     alumno.observaciones.map((obs, index) => (
                         <li key={index} className="observacion-item">
-                            <strong>{obs.titulo}</strong> ({obs.fecha})
+                            {/* --- AQUÍ ESTÁ EL CAMBIO --- */}
+                            <strong>{obs.titulo}</strong> 
+                            {/* Usamos la nueva función para formatear la fecha */}
+                            <span className="observacion-fecha">({formatFecha(obs.fecha)})</span>
                             <p>{obs.texto}</p>
                         </li>
                     ))
@@ -80,3 +98,4 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
 }
 
 export default AlumnoDetalle;
+
