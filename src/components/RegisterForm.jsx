@@ -8,7 +8,7 @@ function RegisterForm({ onRegister }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('alumno');
+  const [userType, setUserType] = useState('regente');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -72,24 +72,28 @@ function RegisterForm({ onRegister }) {
         required
         style={{ marginBottom: '10px', padding: '8px' }}
       />
-      <select 
-        value={userType} 
-        onChange={(e) => setUserType(e.target.value)} 
-        required
-        style={{ marginBottom: '10px', padding: '8px' }}
-      >
-        <option value="alumno">Alumno</option>
-        <option value="profesor">Profesor</option>
-        <option value="preceptor">Preceptor</option>
-        <option value="DOE">DOE</option>
-      </select>
-      <button type="submit" disabled={loading} style={{ padding: '10px' }}>
-        {loading ? 'Registrando...' : 'Registrarse'}
-      </button>
-    </form>
+      <label htmlFor="userType">Tipo de Usuario:</label>
+        <select
+          id="userType"
+          value={userType}
+          onChange={(e) => setUserType(e.target.value)}
+          required
+        >
+          <option value="regente">Regente</option>
+          <option value="DOE">DOE (Admin)</option>
+          {/* Opciones 'alumno', 'profesor', 'preceptor' eliminadas */}
+        </select>
+        
+        <button type="submit" disabled={loading}>
+          {loading ? 'Registrando...' : 'Registrar'}
+        </button>
+        <button type="button" onClick={onBack} className="auth-toggle-btn">
+          Volver al Menú
+        </button>
+      </form>
+    </div>
   );
-}
-
+};
 export default RegisterForm;
 
 
