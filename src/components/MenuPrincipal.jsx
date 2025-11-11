@@ -56,69 +56,67 @@
     };
 
     const userType = user?.userType;
-    const canSeeProfesores = userType === 'profesor' || userType === 'preceptor' || userType === 'DOE';
-    const canSeePreceptores = userType === 'preceptor' || userType === 'DOE';
+    // --- ¡CAMBIO CRÍTICO! ---
+  // Eliminamos las variables de permisos (canSeeProfesores, etc.)
+  // ya que esos chats ya no existen.
 
-    return (
-      <div className="menu-container">
-        <h2>Menú Principal</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+  return (
+    <div className="menu-container">
+      <h2>Menú Principal</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      
+      {/* Chats de Grupo */}
+      <div className="menu-buttons">
+        <h3>Chats de Grupo</h3>
+        <button onClick={() => onNavigate('chat', 'general')}>Chat General</button>
         
-        {/* Chats de Grupo */}
-        <div className="menu-buttons">
-          <h3>Chats de Grupo</h3>
-          <button onClick={() => onNavigate('chat', 'general')}>Chat General</button>
-          <button onClick={() => onNavigate('chat', 'alumnos')}>Chat Alumnos</button>
-          <button onClick={() => onNavigate('chat', 'profesores')} disabled={!canSeeProfesores}>
-            Chat Profesores
-          </button>
-          <button onClick={() => onNavigate('chat', 'preceptores')} disabled={!canSeePreceptores}>
-            Chat Preceptores
-          </button>
-        </div>
+        {/* --- ¡CAMBIO CRÍTICO! --- */}
+        {/* Eliminamos los botones de 'alumnos', 'profesores' y 'preceptores' */}
+      </div>
 
-        {/* Chats Privados */}
-        <div className="private-chat-section">
-          <h3>Chats Privados</h3>
-          {/* --- CAMBIO: Reemplazamos el <select> por un <input> de búsqueda --- */}
-          <input
-            type="text"
-            placeholder="Busca un usuario por nombre..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setSelectedUser(null); // Limpiamos la selección si se cambia la búsqueda
-            }}
-          />
-          {/* Mostramos la lista de resultados de la búsqueda */}
-          {searchResults.length > 0 && (
-            <ul className="search-results">
-              {searchResults.map(u => (
-                <li key={u._id} onClick={() => handleSelectUser(u)}>
-                  {u.username}
-                </li>
-              ))}
-            </ul>
-          )}
-          <button onClick={handlePrivateChat} disabled={!selectedUser}>
-            Iniciar Chat Privado
-          </button>
-        </div>
+      {/* Chats Privados (sigue igual) */}
+      <div className="private-chat-section">
+        <h3>Chats Privados</h3>
+        <input
+          type="text"
+          placeholder="Busca un usuario por nombre..."
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setSelectedUser(null);
+          }}
+        />
+        {searchResults.length > 0 && (
+          <ul className="search-results">
+            {searchResults.map(u => (
+              <li key={u._id} onClick={() => handleSelectUser(u)}>
+                {u.username}
+              </li>
+            ))}
+          </ul>
+        )}
+        <button onClick={handlePrivateChat} disabled={!selectedUser}>
+          Iniciar Chat Privado
+        </button>
+      </div>
+      
+      {/* Otras Opciones */}
+      <div className="menu-buttons" style={{ marginTop: '20px' }}>
         
-        {/* Otras Opciones */}
-        <div className="menu-buttons" style={{marginTop: '20px'}}>
-          <button onClick={() => onNavigate('informe')}>Ver Informe</button>
-          {userType === 'DOE' && (
-          // 2. Usamos 'onNavigate' para cambiar a la vista de registro
+        {/* --- ¡CAMBIO CRÍTICO! --- */}
+        {/* Eliminamos el botón 'Ver Informe' que dependía de los alumnos */}
+        
+        {userType === 'DOE' && (
           <button onClick={() => onNavigate('registro')}>
             Registrar Usuario (DOE)
           </button>
         )}
-          <button onClick={onLogout}>Cerrar Sesión</button>
-        </div>
+        <button onClick={onLogout}>Cerrar Sesión</button>
       </div>
-    );a
-  };
+    </div>
+  );
+};
 
   export default MenuPrincipal;
+
 
