@@ -309,7 +309,8 @@ function Informe({ user, onBack }) {
 
 export default Informe;
 
-export default Informe;
+
+
 
 
 
