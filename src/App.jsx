@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 
 // --- CORRECCIÓN ---
 // Asumimos que TODOS los archivos están en la misma carpeta 'src/'
-import Chat from './Chat.jsx';
-import MenuPrincipal from './MenuPrincipal.jsx';
-import Informe from './Informe.jsx'; 
-import LoginForm from './LoginForm.jsx';
-import RegisterForm from './RegisterForm.jsx';
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
+import Chat from './components/Chat';
+import Informe from './components/Informe';
+import MenuPrincipal from './components/MenuPrincipal';
+import RegistroDOE from './components/RegistroDOE';
+import GestionInformes from './components/GestionInformes.jsx';
 
 // Asumimos que api.js y los CSS también están en 'src/'
 import { getAllUsers } from './api.js'; 
