@@ -1,99 +1,100 @@
 /* ============================================
-   ESTILO TIPO FORMULARIO ESCOLAR (VERSIÓN VIEJA)
+   AÍSLA TOTALMENTE LOS ESTILOS DEL INFORME
    ============================================ */
 
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
+/* FORZAMOS FONDO BLANCO SÍ O SÍ */
+body, html {
+    background: #ffffff !important;
     margin: 0;
-    padding: 20px 0;
+    padding: 0;
 }
 
-/* Simula la hoja centrada */
+/* Fuerza que el contenedor sea una hoja */
 .container {
-    width: 800px;
-    margin: auto;
-    padding: 20px 30px;
-    background: white;
-    border: 1px solid black;
+    width: 800px !important;
+    margin: 20px auto !important;
+    padding: 25px 40px !important;
+
+    background: white !important;
+    border: 1px solid black !important;
+
+    box-shadow: none !important;
 }
 
-/* Títulos del documento */
+/* TITULOS */
 h1, h2, p {
-    text-align: center;
-    margin: 5px 0;
+    text-align: center !important;
+    color: black !important;
+    margin: 5px 0 !important;
 }
 
-h1 {
-    font-size: 22px;
-    font-weight: bold;
-}
-
-/* Bloques */
+/* SECCIONES */
 .form-group {
-    margin: 15px 0;
+    margin: 15px 0 !important;
 }
 
+/* LABELS */
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+    display: block !important;
+    font-weight: bold !important;
+    color: black !important;
+    margin-bottom: 5px !important;
 }
 
-/* Línea para completar — estilo formulario */
+/* INPUT TIPO LINEA — FORMULARIO REAL */
 .input-line {
-    display: block;
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid black;
-    font-size: 16px;
-    padding: 4px 0;
-    margin-bottom: 10px;
-    background: transparent;
-    outline: none;
+    display: block !important;
+    width: 100% !important;
+
+    border: none !important;
+    border-bottom: 1px solid black !important;
+
+    background: transparent !important;
+    color: black !important;
+
+    font-size: 16px !important;
+    padding: 4px 0 !important;
+    margin-bottom: 10px !important;
+
+    outline: none !important;
 }
 
-/* Inputs pequeños */
-.small-input {
-    width: 120px;
-    display: inline-block;
+/* TEXTAREA PERO ESTILO INPUT LINE */
+.textarea-expand {
+    width: 100% !important;
+    border: none !important;
+    border-bottom: 1px solid black !important;
+    background: transparent !important;
+    color: black !important;
+    min-height: 20px !important;
+    resize: none !important;
+    padding: 4px 0 !important;
+    font-size: 16px !important;
 }
 
-/* Grupos horizontales */
-.inline-group {
-    display: flex;
-    gap: 10px;
+/* SELECT TAMBIÉN COMO LÍNEA */
+select.input-line {
+    appearance: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
 }
 
-.inline-group .input-line {
-    width: 100%;
+/* BOTONES */
+.print-button, .button-back button {
+    padding: 10px 20px !important;
+    background: #333 !important;
+    color: white !important;
+    border: none !important;
+    margin-top: 15px !important;
 }
 
-/* Radios */
-.inline-checks {
-    display: flex;
-    justify-content: space-between;
-}
-
-/* Botones */
-.print-button,
-.button-back button {
-    padding: 10px 20px;
-    font-size: 15px;
-    cursor: pointer;
-    background: #333;
-    color: white;
-    border: none;
-}
-
-.button-container {
-    text-align: center;
-    margin-top: 25px;
-}
-
-.button-back {
-    text-align: center;
-    margin-top: 15px;
+/* LISTA DE INFORMES — estilo simple para no romper diseño */
+.informe-list-item {
+    border: 1px solid #ccc !important;
+    padding: 10px !important;
+    background: #fafafa !important;
+    border-radius: 5px !important;
+    margin-bottom: 10px !important;
 }
 
 /* ============================================
@@ -101,23 +102,22 @@ h1 {
    ============================================ */
 
 @media print {
-    body {
-        background: white;
+    body, html {
+        background: white !important;
     }
 
-    .container {
-        width: auto;
-        padding: 0;
-        border: none;
-    }
-
-    button,
-    .print-button,
-    .button-back {
+    button, .print-button, .button-back {
         display: none !important;
     }
 
+    .container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+
     .input-line {
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid black !important;
     }
 }
