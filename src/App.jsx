@@ -12,7 +12,6 @@ import GestionInformes from './components/GestionInformes.jsx';
 
 // Asumimos que api.js y los CSS también están en 'src/'
 import { getAllUsers } from './api.js';
-
 function App() {
   const [user, setUser] = useState(null);
   // 2. --- CORRECCIÓN ---
@@ -75,7 +74,26 @@ function App() {
       <div className="app-container auth-mode">
         {error && <p style={{ color: 'red' }}>{error}</p>}
         {view === 'login' && (
-          <LoginForm onLogin={handleLogin} onNavigate={() => setView('register')} />
+          // --- ¡CORRECCIÓN! ---
+          // Usamos un Fragment (<>) para mostrar el formulario Y el botón
+          <>
+            <LoginForm onLogin={handleLogin} onNavigate={() => setView('register')} />
+            
+            {/* Este es el botón que había desaparecido */}
+            <button 
+              onClick={() => setView('register')}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                color: '#007bff', // Un color azul para que parezca un enlace
+                cursor: 'pointer', 
+                marginTop: '15px',
+                padding: '5px'
+              }}
+            >
+              ¿No tienes cuenta? Regístrate
+            </button>
+          </>
         )}
         {view === 'register' && (
           <RegisterForm onRegister={handleRegister} onBack={() => setView('login')} />
