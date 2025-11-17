@@ -1,25 +1,24 @@
 /* ============================================
-   ESTILO PRINCIPAL DEL INFORME (modo documento)
+   ESTILO TIPO FORMULARIO ESCOLAR (VERSIÓN VIEJA)
    ============================================ */
 
 body {
-    font-family: "Times New Roman", serif;
+    font-family: Arial, sans-serif;
     background: #f5f5f5;
     margin: 0;
     padding: 20px 0;
 }
 
-/* SIMULACIÓN DE HOJA A4 */
+/* Simula la hoja centrada */
 .container {
-    background: white;
     width: 800px;
     margin: auto;
-    padding: 40px 50px;
-    border: 1px solid #000;
-    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    padding: 20px 30px;
+    background: white;
+    border: 1px solid black;
 }
 
-/* TITULOS */
+/* Títulos del documento */
 h1, h2, p {
     text-align: center;
     margin: 5px 0;
@@ -30,93 +29,61 @@ h1 {
     font-weight: bold;
 }
 
-h2 {
-    font-size: 18px;
-    margin-top: 30px;
-    text-decoration: underline;
-}
-
-
-/* ============================
-   SECCIONES Y CAMPOS DEL INFORME
-   ============================ */
-
+/* Bloques */
 .form-group {
-    margin: 20px 0;
+    margin: 15px 0;
 }
 
 .form-group label {
-    font-weight: bold;
-    font-size: 15px;
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;
 }
 
-/* Línea para completar — estilo documento */
+/* Línea para completar — estilo formulario */
 .input-line {
+    display: block;
     width: 100%;
     border: none;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid black;
     font-size: 16px;
     padding: 4px 0;
+    margin-bottom: 10px;
     background: transparent;
     outline: none;
 }
 
-.input-line:focus {
-    border-bottom: 2px solid #000;
-}
-
-/* Input pequeños en línea (firmas, fechas) */
+/* Inputs pequeños */
 .small-input {
-    width: 180px;
-}
-
-/* Textareas estilo documento */
-.textarea-expand {
-    width: 100%;
-    border: 1px solid #000;
-    padding: 6px;
-    resize: none;
-    font-size: 16px;
-    min-height: 60px;
-    background: transparent;
-}
-
-.textarea-expand:focus {
-    border: 1px solid #000;
+    width: 120px;
+    display: inline-block;
 }
 
 /* Grupos horizontales */
 .inline-group {
     display: flex;
-    gap: 15px;
+    gap: 10px;
 }
 
+.inline-group .input-line {
+    width: 100%;
+}
+
+/* Radios */
 .inline-checks {
     display: flex;
-    gap: 20px;
+    justify-content: space-between;
 }
 
-
-/* ============================
-   BOTONES (NO imprimibles)
-   ============================ */
-
+/* Botones */
 .print-button,
 .button-back button {
     padding: 10px 20px;
+    font-size: 15px;
+    cursor: pointer;
     background: #333;
     color: white;
     border: none;
-    cursor: pointer;
-    margin-top: 15px;
-    font-size: 15px;
-}
-
-.print-button:hover,
-.button-back button:hover {
-    background: #000;
 }
 
 .button-container {
@@ -126,95 +93,31 @@ h2 {
 
 .button-back {
     text-align: center;
-    margin-bottom: 20px;
+    margin-top: 15px;
 }
 
+/* ============================================
+   IMPRESIÓN
+   ============================================ */
 
-/* ============================
-   LISTA DE INFORMES (BÚSQUEDA)
-   ============================ */
-
-.informe-search {
-    margin-top: 20px;
-}
-
-.informe-list-item {
-    border: 1px solid #aaa;
-    padding: 10px;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fafafa;
-}
-
-
-/* ============================
-   MODO IMPRESIÓN
-   ============================ */
 @media print {
-
-    /* Eliminar fondos y sombras */
     body {
         background: white;
     }
 
     .container {
-        box-shadow: none;
-        margin: 0;
         width: auto;
-        border: none;
         padding: 0;
+        border: none;
     }
 
-    /* Ocultar botones y elementos interactivos */
     button,
     .print-button,
-    .button-back,
-    .informe-list-item button,
-    .menu-principal,
-    .menu-options,
-    .logout-button {
+    .button-back {
         display: none !important;
     }
 
-    /* Asegurar que las líneas se impriman bien */
     .input-line {
-        border-bottom: 1px solid #000 !important;
+        border-bottom: 1px solid black;
     }
-
-    .textarea-expand {
-        border: 1px solid #000 !important;
-    }
-}
-
-
-/* ============================================
-   MENU PRINCIPAL (NO afecta al informe, pero lo dejo prolijo)
-   ============================================ */
-
-.menu-principal {
-  max-width: 600px;
-  margin: 30px auto;
-  padding: 20px;
-  text-align: center;
-}
-
-.menu-options {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 30px;
-}
-
-.menu-options button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.logout-button {
-  margin-top: 30px;
-  background-color: #f44336;
-  color: white;
 }
