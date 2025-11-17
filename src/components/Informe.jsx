@@ -1,7 +1,7 @@
+// src/components/Informe.jsx
 import React, { useRef, useState, useEffect } from 'react';
 import { createInforme, getInformes } from '../api.js';
-
-import './informe.component.css';  // ÚNICO CSS usado
+import './informe.component.css';
 
 function Informe({ user, onBack }) {
   const containerRef = useRef();
@@ -82,20 +82,12 @@ function Informe({ user, onBack }) {
 
   const imprimirInforme = () => window.print();
 
-  // --- DETALLE DEL INFORME ---
+  // --- DETALLE ---
   if (informeSeleccionado) {
     const inf = informeSeleccionado;
     return (
       <div className="container">
-
-        <button
-          className="print-button"
-          style={{ marginBottom: '20px' }}
-          onClick={() => setInformeSeleccionado(null)}
-        >
-          VOLVER
-        </button>
-
+        <button className="print-button" onClick={() => setInformeSeleccionado(null)}>VOLVER</button>
         <h2>Detalle del Informe</h2>
 
         {Object.entries(inf).map(([key, value]) => (
@@ -108,34 +100,41 @@ function Informe({ user, onBack }) {
     );
   }
 
-  // --- FORMULARIO + BUSQUEDA ---
+  // ---------------------------------------------------------
+  //              FORMULARIO + ESTÉTICA ORIGINAL
+  // ---------------------------------------------------------
   return (
     <div ref={containerRef} className="container">
-
-      <button
-        className="print-button"
-        style={{ marginBottom: '20px' }}
-        onClick={onBack}
-      >
+      <button className="print-button" onClick={onBack}>
         VOLVER AL MENÚ
       </button>
 
       <form onSubmit={handleGuardar}>
-
         <h1>INFORME DE CONVIVENCIA</h1>
+        <p>
+          Gobierno de la Ciudad Autónoma de Buenos Aires<br />
+          Ministerio de Educación<br />
+          E.T. Nº 35 D.E. 18 "Ing. Eduardo Latizna"
+        </p>
 
-        {/* --- Sección Alumno --- */}
+        {/* --- Alumno --- */}
         <div className="form-group">
           <label>1.- El alumno/a:</label>
-          <input className="input-line" name="alumnoNombre" placeholder="Nombre" value={formData.alumnoNombre} onChange={handleChange} />
-          <input className="input-line" name="alumnoAnio" placeholder="Año" value={formData.alumnoAnio} onChange={handleChange} />
-          <input className="input-line" name="alumnoDivision" placeholder="División" value={formData.alumnoDivision} onChange={handleChange} />
+          <div className="inline-group">
+            <input className="input-line" name="alumnoNombre" placeholder="Nombre" value={formData.alumnoNombre} onChange={handleChange} />
+            <input className="input-line" name="alumnoAnio" placeholder="Año" value={formData.alumnoAnio} onChange={handleChange} />
+            <input className="input-line" name="alumnoDivision" placeholder="División" value={formData.alumnoDivision} onChange={handleChange} />
+          </div>
         </div>
 
         {/* --- Acción --- */}
         <div className="form-group">
-          <label>2.- Ha realizado la acción:</label>
+          <label>2.- Ha realizado la acción que se describe a continuación:</label>
           <textarea className="textarea-expand" name="descripcionAccion" value={formData.descripcionAccion} onChange={handleChange} />
+        </div>
+
+        <div className="form-group">
+          <label>Transgrediendo Normas del Reglamento de Convivencia de la escuela.</label>
         </div>
 
         {/* --- Sanción --- */}
@@ -147,26 +146,28 @@ function Informe({ user, onBack }) {
         {/* --- Docente --- */}
         <div className="form-group">
           <label>Docente:</label>
-          <input className="input-line" name="docenteNombre" placeholder="Nombre" value={formData.docenteNombre} onChange={handleChange} />
-          <input className="input-line" name="docenteCargo" placeholder="Cargo" value={formData.docenteCargo} onChange={handleChange} />
-          <input className="input-line" name="docenteFecha" placeholder="Fecha" value={formData.docenteFecha} onChange={handleChange} />
-          <input className="input-line" name="docenteFirma" placeholder="Firma" value={formData.docenteFirma} onChange={handleChange} />
+          <div className="inline-group">
+            <input className="input-line" name="docenteNombre" placeholder="Nombre" value={formData.docenteNombre} onChange={handleChange} />
+            <input className="input-line" name="docenteCargo" placeholder="Cargo" value={formData.docenteCargo} onChange={handleChange} />
+            <input className="input-line" name="docenteFecha" placeholder="Fecha" value={formData.docenteFecha} onChange={handleChange} />
+            <input className="input-line" name="docenteFirma" placeholder="Firma" value={formData.docenteFirma} onChange={handleChange} />
+          </div>
         </div>
 
-        {/* --- Descargo Alumno --- */}
+        {/* --- Descargo --- */}
         <div className="form-group">
-          <label>4.- Descargo del Alumno:</label>
+          <label>4.- Descargo del Alumno/a:</label>
           <textarea className="textarea-expand" name="descargoAlumno" value={formData.descargoAlumno} onChange={handleChange} />
         </div>
 
         {/* --- Consejos --- */}
         <div className="form-group">
-          <label>5.- Informe Consejo de Aula:</label>
+          <label>5.- Informe de Consejo de Aula:</label>
           <textarea className="textarea-expand" name="informeConsejoAula" value={formData.informeConsejoAula} onChange={handleChange} />
         </div>
 
         <div className="form-group">
-          <label>6.- Informe Consejo de Convivencia:</label>
+          <label>6.- Informe de Consejo de Convivencia:</label>
           <textarea className="textarea-expand" name="informeConsejoConvivencia" value={formData.informeConsejoConvivencia} onChange={handleChange} />
         </div>
 
@@ -178,55 +179,52 @@ function Informe({ user, onBack }) {
 
         {/* --- Instancia --- */}
         <div className="form-group">
-          <label>8.- Instancia:</label>
+          <label>8.- Se considera que corresponde:</label>
 
-          <select
-            name="instancia"
-            className="input-line"
-            value={formData.instancia}
-            onChange={handleChange}
-          >
-            <option value="">Seleccione</option>
-            <option value="LEVE">1ª Instancia LEVE</option>
-            <option value="GRAVE">2ª Instancia GRAVE</option>
-            <option value="MUY GRAVE">3ª Instancia MUY GRAVE</option>
-          </select>
+          <div className="inline-checks">
+            <label><input type="radio" name="instancia" value="LEVE" onChange={handleChange} /> 1ª Instancia LEVE</label>
+            <label><input type="radio" name="instancia" value="GRAVE" onChange={handleChange} /> 2ª Instancia GRAVE</label>
+            <label><input type="radio" name="instancia" value="MUY GRAVE" onChange={handleChange} /> 3ª Instancia MUY GRAVE</label>
+          </div>
 
-          <textarea
-            className="textarea-expand"
-            name="otraConsideracion"
-            placeholder="Otra consideración"
-            value={formData.otraConsideracion}
-            onChange={handleChange}
-          />
+          <label>Otra Consideración:</label>
+          <textarea className="textarea-expand" name="otraConsideracion" value={formData.otraConsideracion} onChange={handleChange} />
         </div>
 
         {/* --- Firma Directivo --- */}
         <div className="form-group">
           <label>Firma Directivo:</label>
-          <input className="input-line" name="firmaDirectivo" value={formData.firmaDirectivo} onChange={handleChange} />
-          <input className="input-line" name="fechaDirectivo" value={formData.fechaDirectivo} onChange={handleChange} />
+          <input className="input-line small-input" name="firmaDirectivo" value={formData.firmaDirectivo} onChange={handleChange} />
+          <label>Fecha:</label>
+          <input className="input-line small-input" name="fechaDirectivo" value={formData.fechaDirectivo} onChange={handleChange} />
         </div>
 
-        {/* --- Notificaciones --- */}
+        {/* --- Notificación --- */}
         <div className="form-group">
           <label>9.- Notificación:</label>
-          <input className="input-line" name="notificacionAlumno" placeholder="Alumno" value={formData.notificacionAlumno} onChange={handleChange} />
-          <input className="input-line" name="notificacionTutor" placeholder="Tutor" value={formData.notificacionTutor} onChange={handleChange} />
-          <input className="input-line" name="notificacionFecha" placeholder="Fecha" value={formData.notificacionFecha} onChange={handleChange} />
+
+          <label>Alumno:</label>
+          <input className="input-line small-input" name="notificacionAlumno" value={formData.notificacionAlumno} onChange={handleChange} />
+
+          <label>Padre/Madre/Tutor:</label>
+          <input className="input-line small-input" name="notificacionTutor" value={formData.notificacionTutor} onChange={handleChange} />
+
+          <label>Fecha:</label>
+          <input className="input-line small-input" name="notificacionFecha" value={formData.notificacionFecha} onChange={handleChange} />
         </div>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
         {success && <p style={{ color: "green" }}>{success}</p>}
 
-        <button type="submit" className="print-button" disabled={loading}>
-          {loading ? "Guardando..." : "Guardar en Base de Datos"}
-        </button>
+        <div className="button-container">
+          <button type="submit" className="print-button" disabled={loading}>
+            {loading ? "Guardando..." : "Guardar en Base de Datos"}
+          </button>
 
-        <button type="button" className="print-button" onClick={imprimirInforme}>
-          Imprimir
-        </button>
-
+          <button type="button" className="print-button" onClick={imprimirInforme}>
+            Imprimir
+          </button>
+        </div>
       </form>
 
       {/* --- BUSQUEDA --- */}
@@ -247,13 +245,9 @@ function Informe({ user, onBack }) {
         <ul style={{ listStyle: "none", paddingLeft: 0, marginTop: "20px" }}>
           {informes.length > 0 ? (
             informes.map(inf => (
-              <li
-                key={inf._id}
-                className="informe-list-item"
-              >
+              <li key={inf._id} className="informe-list-item">
                 <div>
-                  <strong>{inf.alumnoNombre}</strong>
-                  <br />
+                  <strong>{inf.alumnoNombre}</strong><br />
                   <small>{new Date(inf.createdAt).toLocaleString()}</small>
                 </div>
 
