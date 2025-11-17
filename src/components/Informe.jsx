@@ -1,7 +1,9 @@
-// src/components/Informe.jsx
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+// Asumimos que 'api.js' y 'AuthForms.css' están en 'src/' (un nivel arriba)
+import { createInforme, getInformes } from '../api.js'; 
+import '../AuthForms.css';
+// Asumimos que 'informe.component.css' está en la misma carpeta ('src/components/')
 import './informe.component.css';
-
 
 // El componente ahora necesita 'user' (para el token) y 'onBack'
 function Informe({ user, onBack }) {
@@ -308,10 +310,3 @@ function Informe({ user, onBack }) {
 }
 
 export default Informe;
-
-
-
-
-
-
-
