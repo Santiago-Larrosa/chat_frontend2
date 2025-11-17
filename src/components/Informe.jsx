@@ -1,14 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react';
-// Asumimos que 'api.js' y 'AuthForms.css' están en 'src/' (un nivel arriba)
-import { createInforme, getInformes } from '../api.js'; 
-import './AuthForms.css'; // Mantenemos esto por si 'auth-form-input' se usa
-// Asumimos que 'informe.component.css' está en la misma carpeta ('src/components/')
-import './informe.component.css';
+import { createInforme, getInformes } from '../api.js';
+
+// ❌ Eliminamos AuthForms.css para evitar estilos mezclados
+// import './AuthForms.css';
+
+import './informe.component.css';   // ✔ Todo el estilo unificado aquí
 
 function Informe({ user, onBack }) {
   const containerRef = useRef();
-  
-  // (Estados... no cambian)
+
+  // --- FORMULARIO ---
   const [formData, setFormData] = useState({
     alumnoNombre: '', alumnoAnio: '', alumnoDivision: '',
     descripcionAccion: '', solicitudSancion: '',
@@ -18,39 +19,38 @@ function Informe({ user, onBack }) {
     firmaDirectivo: '', fechaDirectivo: '',
     notificacionAlumno: '', notificacionTutor: '', notificacionFecha: ''
   });
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
 
-  // --- Estado de la Búsqueda ---
+  // --- BUSQUEDA ---
   const [searchTerm, setSearchTerm] = useState('');
   const [informes, setInformes] = useState([]);
-  const [informeSeleccionado, setInformeSeleccionado] = useState(null); // Para ver detalle
+  const [informeSeleccionado, setInformeSeleccionado] = useState(null);
   const [loadingSearch, setLoadingSearch] = useState(false);
 
-  // (Lógica de Búsqueda... no cambia)
+  // --- Debounce de búsqueda ---
   useEffect(() => {
-    // No buscar si no hay término de búsqueda
     if (!searchTerm.trim()) {
       setInformes([]);
       return;
     }
 
-    const delayDebounceFn = setTimeout(() => {
+    const delay = setTimeout(() => {
       if (!user?.token) return;
-      
+
       setLoadingSearch(true);
       getInformes(user.token, searchTerm)
         .then(data => setInformes(data))
         .catch(err => setError(err.message))
         .finally(() => setLoadingSearch(false));
-        
-    }, 500); // Espera 500ms después de que el usuario deja de escribir
+    }, 500);
 
-    return () => clearTimeout(delayDebounceFn);
+    return () => clearTimeout(delay);
   }, [searchTerm, user?.token]);
 
-  // (Lógica de Formulario: handleChange, handleRadioChange, autoGrow, imprimirInforme, handleGuardar... no cambian)
+  // --- HANDLERS ---
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -76,18 +76,16 @@ function Informe({ user, onBack }) {
     e.preventDefault();
     setError('');
     setSuccess('');
-    
+
     if (!formData.alumnoNombre) {
       setError('El "Nombre del alumno/a" es obligatorio para guardar.');
       return;
     }
-    
+
     setLoading(true);
     try {
       await createInforme(user.token, formData);
       setSuccess('¡Informe guardado con éxito!');
-      // Opcional: limpiar el formulario después de guardar
-      // setFormData({ ...valores iniciales... }); 
     } catch (err) {
       setError(err.message);
     } finally {
@@ -95,61 +93,64 @@ function Informe({ user, onBack }) {
     }
   };
 
-  // --- VISTA: Detalle del Informe Seleccionado ---
+  // --- VISTA DETALLE ---
   if (informeSeleccionado) {
     const inf = informeSeleccionado;
     return (
-      // --- CORRECCIÓN 1 ---
-      // Usamos "container" (de informe.component.css) 
-      // en lugar de "auth-form-container"
       <div className="container" style={{ maxWidth: '800px', textAlign: 'left', margin: '20px auto' }}>
         <div className="button-back">
-          <button onClick={() => setInformeSeleccionado(null)}>
-            VOLVER AL FORMULARIO
-          </button>
+          <button onClick={() => setInformeSeleccionado(null)}>VOLVER AL FORMULARIO</button>
         </div>
-        
-        <h2 style={{marginTop: '20px'}}>Detalle del Informe: {inf.alumnoNombre}</h2>
+
+        <h2 style={{ marginTop: '20px' }}>Detalle del Informe: {inf.alumnoNombre}</h2>
         <p><strong>Fecha Guardado:</strong> {new Date(inf.createdAt).toLocaleString()}</p>
-        <hr/>
-        
-        {/* Usamos las clases "form-group" para consistencia */}
+        <hr />
+
         <div className="form-group">
           <label>1.- El alumno/a:</label>
           <p>{inf.alumnoNombre} (Año: {inf.alumnoAnio}, División: {inf.alumnoDivision})</p>
         </div>
+
         <div className="form-group">
           <label>2.- Acción:</label>
           <p>{inf.descripcionAccion}</p>
         </div>
+
         <div className="form-group">
           <label>3.- Sanción Solicitada:</label>
           <p>{inf.solicitudSancion}</p>
         </div>
+
         <div className="form-group">
           <label>Docente:</label>
           <p>{inf.docenteNombre} ({inf.docenteCargo}) - Fecha: {inf.docenteFecha}</p>
         </div>
+
         <div className="form-group">
           <label>4.- Descargo Alumno:</label>
           <p>{inf.descargoAlumno}</p>
         </div>
+
         <div className="form-group">
           <label>5.- Informe C. Aula:</label>
           <p>{inf.informeConsejoAula}</p>
         </div>
+
         <div className="form-group">
           <label>6.- Informe C. Convivencia:</label>
           <p>{inf.informeConsejoConvivencia}</p>
         </div>
+
         <div className="form-group">
           <label>7.- Observaciones:</label>
           <p>{inf.observaciones}</p>
         </div>
+
         <div className="form-group">
           <label>8.- Instancia:</label>
           <p>{inf.instancia} {inf.otraConsideracion ? `(${inf.otraConsideracion})` : ''}</p>
         </div>
+
         <div className="form-group">
           <label>9.- Notificación:</label>
           <p>Alumno: {inf.notificacionAlumno} / Tutor: {inf.notificacionTutor} / Fecha: {inf.notificacionFecha}</p>
@@ -158,22 +159,23 @@ function Informe({ user, onBack }) {
     );
   }
 
-  // --- VISTA: Formulario de Creación y Búsqueda ---
-  // (El div principal "container" ya era correcto)
+  // --- FORMULARIO + BUSQUEDA ---
   return (
     <div ref={containerRef} className="container">
-      {/* Botón de Volver al Menú */}
+
+      {/* Botón volver */}
       <div className="button-back" style={{ marginBottom: '20px' }}>
-        <button onClick={onBack}>VOLVER AL MENÚ</button> 
+        <button onClick={onBack}>VOLVER AL MENÚ</button>
       </div>
 
-      {/* Formulario de Creación (esta parte ya usaba el CSS correcto) */}
+      {/* FORMULARIO */}
       <form onSubmit={handleGuardar}>
         <h1>INFORME DE CONVIVENCIA</h1>
         <p>Gobierno de la Ciudad Autónoma de Buenos Aires<br />
           Ministerio de Educación<br />
           E.T. Nº 35 D.E. 18, "Ing. Eduardo Latizna"</p>
-        
+
+        {/* Alumno */}
         <div className="form-group">
           <label>1.- El alumno/a:</label>
           <div className="inline-group">
@@ -186,6 +188,7 @@ function Informe({ user, onBack }) {
           </div>
         </div>
 
+        {/* Acción */}
         <div className="form-group">
           <label>2.- Ha realizado la acción que se describe a continuación:</label>
           <textarea name="descripcionAccion" value={formData.descripcionAccion} onChange={handleChange}
@@ -196,12 +199,14 @@ function Informe({ user, onBack }) {
           <label>Transgrediendo Normas del Reglamento de Convivencia de la escuela.</label>
         </div>
 
+        {/* Sanción */}
         <div className="form-group">
           <label>3.- Solicitud de sanción:</label>
           <textarea name="solicitudSancion" value={formData.solicitudSancion} onChange={handleChange}
             className="textarea-expand" placeholder="Descripción de la sanción" />
         </div>
 
+        {/* Docente */}
         <div className="form-group">
           <label>Docente:</label>
           <div className="inline-group">
@@ -216,32 +221,37 @@ function Informe({ user, onBack }) {
           </div>
         </div>
 
+        {/* Descargo */}
         <div className="form-group">
           <label>4.- Descargo del Alumno/a:</label>
           <textarea name="descargoAlumno" value={formData.descargoAlumno} onChange={handleChange}
             className="textarea-expand" placeholder="Descargo del alumno/a" />
         </div>
 
+        {/* Informe Aula */}
         <div className="form-group">
           <label>5.- Informe de Consejo de Aula:</label>
           <textarea name="informeConsejoAula" value={formData.informeConsejoAula} onChange={handleChange}
             className="textarea-expand" placeholder="Informe del Consejo de Aula" />
         </div>
 
+        {/* Informe Convivencia */}
         <div className="form-group">
           <label>6.- Informe de Consejo de Convivencia:</label>
           <textarea name="informeConsejoConvivencia" value={formData.informeConsejoConvivencia} onChange={handleChange}
             className="textarea-expand" placeholder="Informe del Consejo de Convivencia" />
         </div>
 
+        {/* Observaciones */}
         <div className="form-group">
           <label>7.- Observaciones:</label>
           <textarea name="observaciones" value={formData.observaciones} onChange={handleChange}
             className="textarea-expand" placeholder="Observaciones adicionales" />
         </div>
 
+        {/* Instancia */}
         <div className="form-group">
-          <label>8.- Se considera que corresponde (Indicar a continuación):</label>
+          <label>8.- Se considera que corresponde:</label>
           <div className="inline-checks">
             <label><input type="radio" name="instancia" value="LEVE" onChange={handleRadioChange} checked={formData.instancia === 'LEVE'} /> 1ª Instancia LEVE</label>
             <label><input type="radio" name="instancia" value="GRAVE" onChange={handleRadioChange} checked={formData.instancia === 'GRAVE'} /> 2ª Instancia GRAVE</label>
@@ -249,12 +259,14 @@ function Informe({ user, onBack }) {
           </div>
         </div>
 
+        {/* Otra consideración */}
         <div className="form-group">
           <label>Otra Consideración:</label>
           <textarea name="otraConsideracion" value={formData.otraConsideracion} onChange={handleChange}
             className="textarea-expand" />
         </div>
 
+        {/* Firma directivo */}
         <div className="form-group">
           <label>Firma Directivo:</label>
           <input name="firmaDirectivo" value={formData.firmaDirectivo} onChange={handleChange}
@@ -264,6 +276,7 @@ function Informe({ user, onBack }) {
             type="text" className="input-line small-input" />
         </div>
 
+        {/* Notificación */}
         <div className="form-group">
           <label>9.- Notificación:</label>
           <label>Alumno:</label>
@@ -276,11 +289,12 @@ function Informe({ user, onBack }) {
           <input name="notificacionFecha" value={formData.notificacionFecha} onChange={handleChange}
             type="text" className="input-line small-input" />
         </div>
-        
-        {/* Mensajes de estado */}
+
+        {/* Mensajes */}
         {error && <p style={{ color: 'red', fontWeight: 'bold' }}>{error}</p>}
         {success && <p style={{ color: 'green', fontWeight: 'bold' }}>{success}</p>}
 
+        {/* Botones */}
         <div className="button-container">
           <button type="submit" className="print-button" disabled={loading}>
             {loading ? 'Guardando...' : 'Guardar en Base de Datos'}
@@ -291,48 +305,45 @@ function Informe({ user, onBack }) {
         </div>
       </form>
 
-      {/* --- CORRECCIÓN 2 --- */}
-      {/* Sección de Búsqueda (añadida al final) */}
-      {/* Quitamos "auth-form-container" y usamos "form-group" 
-          para que se integre con el estilo de "container" */}
+      {/* --- BUSQUEDA DE INFORMES --- */}
       <div className="form-group" style={{ marginTop: '40px' }}>
         <h2>Búsqueda de Informes Guardados</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        <div className="informe-search" style={{ marginTop: '10px' }}>
+        <div className="informe-search">
           <label>Buscar Informes por Nombre de Alumno:</label>
+
           <input
             type="text"
             placeholder="Escribe el nombre del alumno..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.g.value)}
-            // Usamos "input-line" de tu CSS original
+            onChange={(e) => setSearchTerm(e.target.value)}  // ✔ CORREGIDO
             className="input-line"
-            style={{width: '100%'} /* Hacemos que ocupe todo el ancho */}
+            style={{ width: '100%' }}
           />
+
           {loadingSearch && <p>Buscando...</p>}
-          
-          <ul style={{ listStyle: 'none', paddingLeft: '0', marginTop: '20px' }}>
+
+          <ul style={{ listStyle: 'none', paddingLeft: 0, marginTop: '20px' }}>
             {informes.length > 0 ? (
-              informes.map(informe => (
-                <li key={informe._id} className="informe-list-item" style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  padding: '10px', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '8px', 
-                  marginBottom: '10px' 
+              informes.map(inf => (
+                <li key={inf._id} className="informe-list-item" style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '10px',
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  marginBottom: '10px'
                 }}>
                   <div>
-                    <strong>{informe.alumnoNombre}</strong>
-                    <br/>
+                    <strong>{inf.alumnoNombre}</strong>
+                    <br />
                     <small style={{ color: '#777' }}>
-                      Guardado: {new Date(informe.createdAt).toLocaleString()}
+                      Guardado: {new Date(inf.createdAt).toLocaleString()}
                     </small>
                   </div>
-                  {/* Usamos 'print-button' para que el botón coincida */}
-                  <button className="print-button" onClick={() => setInformeSeleccionado(informe)}>
+
+                  <button className="print-button" onClick={() => setInformeSeleccionado(inf)}>
                     Ver Detalle
                   </button>
                 </li>
@@ -348,4 +359,3 @@ function Informe({ user, onBack }) {
 }
 
 export default Informe;
-
