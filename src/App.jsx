@@ -11,9 +11,7 @@ import RegistroDOE from './components/RegistroDOE';
 import GestionInformes from './components/GestionInformes.jsx';
 
 // Asumimos que api.js y los CSS también están en 'src/'
-import { getAllUsers } from './api.js'; 
-import './App.css';
-import './AuthForms.css';
+import { getAllUsers } from './api.js';
 
 function App() {
   const [user, setUser] = useState(null);
