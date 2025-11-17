@@ -1,152 +1,127 @@
 import { useState, useEffect } from 'react';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import Chat from './components/Chat';
-import Informe from './components/Informe';
-import MenuPrincipal from './components/MenuPrincipal';
-import RegistroDOE from './components/RegistroDOE';
-import GestionInformes from './components/GestionInformes.jsx';
-import { getAllUsers } from './api'; // Importamos la API
+
+// --- CORRECCIÓN ---
+// Asumimos que TODOS los archivos están en la misma carpeta 'src/'
+import Chat from './Chat.jsx';
+import MenuPrincipal from './MenuPrincipal.jsx';
+import Informe from './Informe.jsx'; 
+import LoginForm from './LoginForm.jsx';
+import RegisterForm from './RegisterForm.jsx';
+
+// Asumimos que api.js y los CSS también están en 'src/'
+import { getAllUsers } from './api.js'; 
+import './App.css';
+import './AuthForms.css';
 
 function App() {
-    const [user, setUser] = useState(null);
-    const [view, setView] = useState('login');
-    const [currentChat, setCurrentChat] = useState('general');
-    const [allUsers, setAllUsers] = useState([]);
-    const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  // 2. --- CORRECCIÓN ---
+  // 'informe' es ahora una vista válida
+  const [view, setView] = useState('login'); // 'login', 'register', 'menu', 'chat', 'informe'
+  const [chatType, setChatType] = useState('general');
+  const [allUsers, setAllUsers] = useState([]);
+  const [error, setError] = useState('');
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            try {
-                const parsedUser = JSON.parse(storedUser);
-                if (parsedUser.token && parsedUser.username) {
-                    setUser(parsedUser);
-                    setView('menu');
-                } else {
-                    localStorage.removeItem('user');
-                }
-            } catch (error) {
-                localStorage.removeItem('user');
-            }
-        }
-    }, []);
-
-    useEffect(() => {
-        if (user?.token) {
-            getAllUsers(user.token)
-                .then(setAllUsers)
-                .catch(err => console.error("Error fetching users:", err));
-        }
-    }, [user?.token]);
-
-    const handleLogin = (responseData) => {
-        const userData = {
-            token: responseData.token,
-            id: responseData.id,
-            username: responseData.username,
-            email: responseData.email,
-            userType: responseData.userType
-        };
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
+  // Cargar usuario desde localStorage al iniciar
+  useEffect(() => {
+    const storedUser = localStorage.getItem('chatUser');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      if (parsedUser && parsedUser.token) {
+        setUser(parsedUser);
         setView('menu');
-    };
+      }
+    }
+  }, []);
 
-    const handleRegister = (userData) => {
-        setLoading(true);
-        handleLogin(userData);
-        setLoading(false);
-    };
+  // Cargar lista de usuarios si estamos logueados
+  useEffect(() => {
+    if (user && user.token) {
+      getAllUsers(user.token)
+        .then(setAllUsers)
+        .catch(err => console.error("Error al cargar usuarios:", err));
+    }
+  }, [user]);
 
-    const handleLogout = () => {
-        setUser(null);
-        setAllUsers([]);
-        localStorage.removeItem('user');
-        setView('login');
-    };
-     const handleNavigate = (targetView, targetChatType = null) => {
-    setView(targetView);
-    if (targetChatType) {
+  const handleLogin = (userData) => {
+    localStorage.setItem('chatUser', JSON.stringify(userData));
+    setUser(userData);
+    setView('menu');
+    setError('');
+  };
+
+  const handleRegister = (userData) => {
+    setView('login');
+    setError('');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('chatUser');
+    setUser(null);
+    setView('login');
+  };
+
+  // Función de navegación principal
+  const handleNavigate = (targetView, targetChatType = null) => {
+    if (targetView === 'chat' && targetChatType) {
       setChatType(targetChatType);
     }
+    setView(targetView);
   };
-    const navigate = (newView, chatType = 'general') => {
-        if (newView === 'chat') {
-            setCurrentChat(chatType);
-        }
-        setView(newView);
-    }
 
+  // --- Vistas de Login / Registro ---
+  if (!user) {
     return (
-        <div className="App">
-            {view === 'login' && (
-                <>
-                    <LoginForm
-                        onLogin={handleLogin}
-                        onCambioRegistro={() => setView('registro')} // 👈 botón en Login va al registro
-                    />
-                    <button
-                        onClick={() => setView('register')}
-                        style={{ marginTop: '20px' }}
-                    >
-                        ¿No tienes cuenta? Regístrate
-                    </button>
-                </>
-            )}
+      <div className="app-container auth-mode">
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {view === 'login' && (
+          <LoginForm onLogin={handleLogin} onNavigate={() => setView('register')} />
+        )}
+        {view === 'register' && (
+          <RegisterForm onRegister={handleRegister} onBack={() => setView('login')} />
+        )}
+      </div>
+    );
+  }
 
-            {view === 'register' && (
-                <>
-                    <RegisterForm onRegister={handleRegister} />
-                    <button
-                        onClick={() => setView('login')}
-                        style={{ marginTop: '20px' }}
-                        disabled={loading}
-                    >
-                        ¿Ya tienes cuenta? Inicia sesión
-                    </button>
-                </>
-            )}
-
-            {view === 'menu' && user && (
-                <MenuPrincipal
-                    user={user}
-                    onNavigate={navigate}
-                    onLogout={handleLogout}
-                />
-            )}
-
-            {view === 'chat' && user && (
-                <Chat
-                    user={user}
-                    chatType={currentChat}
-                    allUsers={allUsers}
-                    onBack={() => navigate('menu')}
-                    onLogout={handleLogout}
-                    onCambioRegistro={() => navigate('registro')} // 👈 botón en Chat va al registro
-                />
-            )}
-
-            {view === 'informe' && user && (
-                <Informe onBack={() => navigate('menu')} />
-            )}
-
-            {view === 'registro' && (
-                <RegistroDOE
-                    // 👇 si hay usuario vuelve al chat, si no vuelve al login
-                    onBack={() => setView(user ? 'chat' : 'login')}
-                />
-            )}
-
-            {/* --- 2. AÑADIR EL RENDERIZADO DEL NUEVO COMPONENTE --- */}
-      {view === 'informes' && (
-        <GestionInformes
+  // --- Vistas de Usuario Autenticado ---
+  return (
+    <div className="app-container">
+      {view === 'menu' && (
+        <MenuPrincipal
           user={user}
+          onNavigate={handleNavigate}
+          onLogout={handleLogout}
+        />
+      )}
+      
+      {view === 'chat' && (
+        <Chat
+          user={user}
+          chatType={chatType}
+          allUsers={allUsers}
+          onBack={() => setView('menu')}
+          onLogout={handleLogout}
+        />
+      )}
+      
+      {/* 3. --- CORRECCIÓN --- */}
+      {/* Ahora, cuando la vista es 'informe' (desde el botón del menú), 
+        renderizamos tu componente 'Informe.jsx' y, 
+        crucialmente, le pasamos el 'user'.
+      */}
+      {view === 'informe' && (
+        <Informe
+          user={user} // <-- ¡AQUÍ ESTÁ LA SOLUCIÓN!
           onBack={() => setView('menu')}
         />
       )}
-        </div>
-    );
+      
+      {view === 'registro' && (
+         <RegisterForm onRegister={handleRegister} onBack={() => setView('menu')} />
+      )}
+    </div>
+  );
 }
 
 export default App;
