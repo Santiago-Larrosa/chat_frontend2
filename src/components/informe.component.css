@@ -1,36 +1,44 @@
 /* ============================================
-   AÍSLA TOTALMENTE LOS ESTILOS DEL INFORME
+   ESTILO DE INFORME OFICIAL — COMPATIBLE
    ============================================ */
 
-/* FORZAMOS FONDO BLANCO SÍ O SÍ */
+/* FONDO GENERAL BLANCO */
 body, html {
     background: #ffffff !important;
     margin: 0;
     padding: 0;
 }
 
-/* Fuerza que el contenedor sea una hoja */
+/* HOJA A4 SIMPLIFICADA */
 .container {
-    width: 800px !important;
+    width: 800px !important;           /* similar a hoja A4 */
+    max-width: 100% !important;
     margin: 20px auto !important;
-    padding: 25px 40px !important;
+    padding: 30px 40px !important;
 
     background: white !important;
     border: 1px solid black !important;
 
     box-shadow: none !important;
+    border-radius: 0 !important;
 }
 
 /* TITULOS */
-h1, h2, p {
+h1, h2 {
     text-align: center !important;
+    margin: 10px 0 !important;
     color: black !important;
-    margin: 5px 0 !important;
 }
 
-/* SECCIONES */
+p {
+    text-align: center !important;
+    margin: 5px 0 !important;
+    color: black !important;
+}
+
+/* GRUPO DE CAMPOS */
 .form-group {
-    margin: 15px 0 !important;
+    margin: 18px 0 !important;
 }
 
 /* LABELS */
@@ -38,86 +46,4 @@ h1, h2, p {
     display: block !important;
     font-weight: bold !important;
     color: black !important;
-    margin-bottom: 5px !important;
-}
-
-/* INPUT TIPO LINEA — FORMULARIO REAL */
-.input-line {
-    display: block !important;
-    width: 100% !important;
-
-    border: none !important;
-    border-bottom: 1px solid black !important;
-
-    background: transparent !important;
-    color: black !important;
-
-    font-size: 16px !important;
-    padding: 4px 0 !important;
-    margin-bottom: 10px !important;
-
-    outline: none !important;
-}
-
-/* TEXTAREA PERO ESTILO INPUT LINE */
-.textarea-expand {
-    width: 100% !important;
-    border: none !important;
-    border-bottom: 1px solid black !important;
-    background: transparent !important;
-    color: black !important;
-    min-height: 20px !important;
-    resize: none !important;
-    padding: 4px 0 !important;
-    font-size: 16px !important;
-}
-
-/* SELECT TAMBIÉN COMO LÍNEA */
-select.input-line {
-    appearance: none !important;
-    background: transparent !important;
-    border-radius: 0 !important;
-}
-
-/* BOTONES */
-.print-button, .button-back button {
-    padding: 10px 20px !important;
-    background: #333 !important;
-    color: white !important;
-    border: none !important;
-    margin-top: 15px !important;
-}
-
-/* LISTA DE INFORMES — estilo simple para no romper diseño */
-.informe-list-item {
-    border: 1px solid #ccc !important;
-    padding: 10px !important;
-    background: #fafafa !important;
-    border-radius: 5px !important;
-    margin-bottom: 10px !important;
-}
-
-/* ============================================
-   IMPRESIÓN
-   ============================================ */
-
-@media print {
-    body, html {
-        background: white !important;
-    }
-
-    button, .print-button, .button-back {
-        display: none !important;
-    }
-
-    .container {
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        border: none !important;
-    }
-
-    .input-line {
-        border-bottom: 1px solid black !important;
-    }
-}
+    margin-bott
