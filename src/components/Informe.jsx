@@ -1,15 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 // Asumimos que 'api.js' y 'AuthForms.css' están en 'src/' (un nivel arriba)
 import { createInforme, getInformes } from '../api.js'; 
-
+import '../AuthForms.css'; // Mantenemos esto por si 'auth-form-input' se usa
 // Asumimos que 'informe.component.css' está en la misma carpeta ('src/components/')
 import './informe.component.css';
 
-// El componente ahora necesita 'user' (para el token) y 'onBack'
 function Informe({ user, onBack }) {
   const containerRef = useRef();
   
-  // --- Estado del Formulario (Crear) ---
+  // (Estados... no cambian)
   const [formData, setFormData] = useState({
     alumnoNombre: '', alumnoAnio: '', alumnoDivision: '',
     descripcionAccion: '', solicitudSancion: '',
@@ -29,7 +28,7 @@ function Informe({ user, onBack }) {
   const [informeSeleccionado, setInformeSeleccionado] = useState(null); // Para ver detalle
   const [loadingSearch, setLoadingSearch] = useState(false);
 
-  // --- Lógica de Búsqueda (Debounced) ---
+  // (Lógica de Búsqueda... no cambia)
   useEffect(() => {
     // No buscar si no hay término de búsqueda
     if (!searchTerm.trim()) {
@@ -51,8 +50,7 @@ function Informe({ user, onBack }) {
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, user?.token]);
 
-  // --- Lógica del Formulario ---
-
+  // (Lógica de Formulario: handleChange, handleRadioChange, autoGrow, imprimirInforme, handleGuardar... no cambian)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -99,35 +97,69 @@ function Informe({ user, onBack }) {
 
   // --- VISTA: Detalle del Informe Seleccionado ---
   if (informeSeleccionado) {
-    const inf = informeSeleccionado; // Alias corto
+    const inf = informeSeleccionado;
     return (
-      <div className="auth-form-container" style={{ maxWidth: '800px', textAlign: 'left', margin: '20px auto' }}>
-        <button onClick={() => setInformeSeleccionado(null)} className="auth-toggle-btn">
-          Volver al Formulario
-        </button>
+      // --- CORRECCIÓN 1 ---
+      // Usamos "container" (de informe.component.css) 
+      // en lugar de "auth-form-container"
+      <div className="container" style={{ maxWidth: '800px', textAlign: 'left', margin: '20px auto' }}>
+        <div className="button-back">
+          <button onClick={() => setInformeSeleccionado(null)}>
+            VOLVER AL FORMULARIO
+          </button>
+        </div>
+        
         <h2 style={{marginTop: '20px'}}>Detalle del Informe: {inf.alumnoNombre}</h2>
         <p><strong>Fecha Guardado:</strong> {new Date(inf.createdAt).toLocaleString()}</p>
         <hr/>
-        <p><strong>Alumno:</strong> {inf.alumnoNombre} ({inf.alumnoAnio} {inf.alumnoDivision})</p>
-        <p><strong>Acción:</strong> {inf.descripcionAccion}</p>
-        <p><strong>Sanción Solicitada:</strong> {inf.solicitudSancion}</p>
-        <hr/>
-        <p><strong>Docente:</strong> {inf.docenteNombre} ({inf.docenteCargo}) - Fecha: {inf.docenteFecha}</p>
-        <hr/>
-        <p><strong>Descargo Alumno:</strong> {inf.descargoAlumno}</p>
-        <p><strong>Informe C. Aula:</strong> {inf.informeConsejoAula}</p>
-        <p><strong>Informe C. Convivencia:</strong> {inf.informeConsejoConvivencia}</p>
-        <hr/>
-        <p><strong>Instancia:</strong> {inf.instancia}</p>
-        <p><strong>Otras Consideraciones:</strong> {inf.otraConsideracion}</p>
-        <p><strong>Observaciones:</strong> {inf.observaciones}</p>
-        <hr/>
-        <p><strong>Notif. Alumno:</strong> {inf.notificacionAlumno} / <strong>Tutor:</strong> {inf.notificacionTutor} / <strong>Fecha:</strong> {inf.notificacionFecha}</p>
+        
+        {/* Usamos las clases "form-group" para consistencia */}
+        <div className="form-group">
+          <label>1.- El alumno/a:</label>
+          <p>{inf.alumnoNombre} (Año: {inf.alumnoAnio}, División: {inf.alumnoDivision})</p>
+        </div>
+        <div className="form-group">
+          <label>2.- Acción:</label>
+          <p>{inf.descripcionAccion}</p>
+        </div>
+        <div className="form-group">
+          <label>3.- Sanción Solicitada:</label>
+          <p>{inf.solicitudSancion}</p>
+        </div>
+        <div className="form-group">
+          <label>Docente:</label>
+          <p>{inf.docenteNombre} ({inf.docenteCargo}) - Fecha: {inf.docenteFecha}</p>
+        </div>
+        <div className="form-group">
+          <label>4.- Descargo Alumno:</label>
+          <p>{inf.descargoAlumno}</p>
+        </div>
+        <div className="form-group">
+          <label>5.- Informe C. Aula:</label>
+          <p>{inf.informeConsejoAula}</p>
+        </div>
+        <div className="form-group">
+          <label>6.- Informe C. Convivencia:</label>
+          <p>{inf.informeConsejoConvivencia}</p>
+        </div>
+        <div className="form-group">
+          <label>7.- Observaciones:</label>
+          <p>{inf.observaciones}</p>
+        </div>
+        <div className="form-group">
+          <label>8.- Instancia:</label>
+          <p>{inf.instancia} {inf.otraConsideracion ? `(${inf.otraConsideracion})` : ''}</p>
+        </div>
+        <div className="form-group">
+          <label>9.- Notificación:</label>
+          <p>Alumno: {inf.notificacionAlumno} / Tutor: {inf.notificacionTutor} / Fecha: {inf.notificacionFecha}</p>
+        </div>
       </div>
     );
   }
 
   // --- VISTA: Formulario de Creación y Búsqueda ---
+  // (El div principal "container" ya era correcto)
   return (
     <div ref={containerRef} className="container">
       {/* Botón de Volver al Menú */}
@@ -135,7 +167,7 @@ function Informe({ user, onBack }) {
         <button onClick={onBack}>VOLVER AL MENÚ</button> 
       </div>
 
-      {/* Formulario de Creación */}
+      {/* Formulario de Creación (esta parte ya usaba el CSS correcto) */}
       <form onSubmit={handleGuardar}>
         <h1>INFORME DE CONVIVENCIA</h1>
         <p>Gobierno de la Ciudad Autónoma de Buenos Aires<br />
@@ -259,19 +291,24 @@ function Informe({ user, onBack }) {
         </div>
       </form>
 
+      {/* --- CORRECCIÓN 2 --- */}
       {/* Sección de Búsqueda (añadida al final) */}
-      <div className="auth-form-container" style={{ maxWidth: '800px', margin: '40px auto' }}>
+      {/* Quitamos "auth-form-container" y usamos "form-group" 
+          para que se integre con el estilo de "container" */}
+      <div className="form-group" style={{ marginTop: '40px' }}>
         <h2>Búsqueda de Informes Guardados</h2>
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        <div className="informe-search" style={{ marginTop: '30px' }}>
-          <h3>Buscar Informes por Nombre de Alumno</h3>
+        <div className="informe-search" style={{ marginTop: '10px' }}>
+          <label>Buscar Informes por Nombre de Alumno:</label>
           <input
             type="text"
-            placeholder="Buscar por nombre de alumno..."
+            placeholder="Escribe el nombre del alumno..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="auth-form-input"
+            onChange={(e) => setSearchTerm(e.g.value)}
+            // Usamos "input-line" de tu CSS original
+            className="input-line"
+            style={{width: '100%'} /* Hacemos que ocupe todo el ancho */}
           />
           {loadingSearch && <p>Buscando...</p>}
           
@@ -294,7 +331,8 @@ function Informe({ user, onBack }) {
                       Guardado: {new Date(informe.createdAt).toLocaleString()}
                     </small>
                   </div>
-                  <button onClick={() => setInformeSeleccionado(informe)}>
+                  {/* Usamos 'print-button' para que el botón coincida */}
+                  <button className="print-button" onClick={() => setInformeSeleccionado(informe)}>
                     Ver Detalle
                   </button>
                 </li>
@@ -310,4 +348,3 @@ function Informe({ user, onBack }) {
 }
 
 export default Informe;
-
