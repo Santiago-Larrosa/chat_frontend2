@@ -136,8 +136,11 @@ function App() {
       )}
       
       {view === 'registro' && (
-         <RegisterForm onRegister={handleRegister} onBack={() => setView('menu')} />
-      )}
+                <RegistroDOE
+                    // 👇 si hay usuario vuelve al chat, si no vuelve al login
+                    onBack={() => setView(user ? 'chat' : 'login')}
+                />
+            )}
     </div>
   );
 }
