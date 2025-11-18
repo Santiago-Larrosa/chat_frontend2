@@ -3,6 +3,8 @@ import { getMessages, sendMessage } from '../api';
 import './Chat.css';
 
 
+
+
 function Chat({ user, chatType, allUsers, onBack, onLogout }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -12,11 +14,9 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
   
   const capitalize = (s) => (s && s.charAt(0).toUpperCase() + s.slice(1)) || "";
 
-  // --- CAMBIO 2: Lógica para determinar el título del chat ---
   const chatTitle = useMemo(() => {
     if (chatType.includes('_')) {
       const otherUserId = chatType.split('_').find(id => id !== user.id);
-      // Asegúrate de que allUsers exista antes de usar 'find'
       const otherUser = allUsers?.find(u => u._id === otherUserId);
       return otherUser ? `Chat con ${otherUser.username}` : 'Chat Privado';
     }
@@ -29,17 +29,18 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
 
     const loadMessages = async () => {
       try {
-        setError(null); // Limpiar error anterior
+        setError(null); 
         const data = await getMessages(user.token, chatType);
         setMessages(data);
       } catch (err) {
         setError("No se pudieron cargar los mensajes.");
-        console.error(err); // Añadido para depuración
+        console.error(err);
       }
     };
     
     loadMessages();
-    const interval = setInterval(loadMessages, 5000);
+    // Refrescamos los mensajes cada 5 segundos
+    const interval = setInterval(loadMessages, 5000); 
     return () => clearInterval(interval);
   }, [user?.token, chatType]);
   
@@ -69,21 +70,17 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
     };
   
     try {
-      // Actualización optimista: añade el mensaje temporalmente
       setMessages(prev => [...prev, { _id: tempId, ...messageData, isTemp: true }]);
       setInput('');
   
-      // Envía el mensaje real
       const saved = await sendMessage(user.token, messageData);
   
-      // Reemplaza el mensaje temporal con el mensaje guardado del servidor
       setMessages(prev => prev.map(msg => (msg._id === tempId ? saved : msg)));
   
     } catch (err) {
-      // Si falla, quita el mensaje temporal
       setMessages(prev => prev.filter(msg => msg._id !== tempId));
       setError('Error al enviar. Intenta nuevamente.');
-      console.error(err); // Añadido para depuración
+      console.error(err);
     } finally {
       setIsSending(false);
     }
@@ -92,7 +89,6 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
   return (
     <div className="chat-container">
       <header>
-        {/* --- CAMBIO 3: Usamos el título dinámico --- */}
         <h2>{chatTitle}</h2>
         <p>Conectado como: <strong>{user?.username}</strong> ({capitalize(user?.userType)})</p>
         <div className="chat-actions">
@@ -108,23 +104,35 @@ function Chat({ user, chatType, allUsers, onBack, onLogout }) {
           <p>Aún no hay mensajes en este chat.</p>
         ) : (
           messages.map((msg) => (
-            // --- INICIO DE LA ACTUALIZACIÓN (HORA DE ENVÍO) ---
             <div key={msg._id} className={`message ${msg.isTemp ? 'sending' : ''}`}>
               <div className="message-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <div>
                   <strong>{msg.author}</strong> 
                   <span className="user-type"> ({capitalize(msg.userType || 'Usuario')}):</span> 
                 </div>
-                <span className="message-time" style={{ fontSize: '0.75rem', color: '#888', marginLeft: '10px' }}>
-                  {/* Verificamos si 'createdAt' existe (los mensajes del servidor lo tienen) */}
+                
+                {/* --- ¡AQUÍ ESTÁ EL CAMBIO! --- */}
+                <span className="message-time" style={{ 
+                  fontSize: '0.75rem', 
+                  color: '#888', 
+                  marginLeft: '10px', 
+                  whiteSpace: 'nowrap' /* Para que la fecha y hora no se separen */ 
+                }}>
                   {msg.createdAt 
-                    ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+                    ? new Date(msg.createdAt).toLocaleString('es-AR', { 
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        year: 'numeric', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      }) 
                     : 'Enviando...'}
                 </span>
+                {/* --- FIN DEL CAMBIO --- */}
+                
               </div>
               <p style={{ margin: '4px 0 0' }}>{msg.content}</p>
             </div>
-            // --- FIN DE LA ACTUALIZACIÓN ---
           ))
         )}
       </div>
