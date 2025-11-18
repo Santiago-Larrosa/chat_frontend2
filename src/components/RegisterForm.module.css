@@ -1,62 +1,70 @@
-/*
+/* ============================================
+   FORMULARIO ESTILO CYAN / GRIS SUAVE
+   ============================================ */
+
 .form {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f3f8fa; /* gris celeste suave */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Título */
+.title {
+  color: #00bcd4; /* cyan suave */
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+/* Inputs */
+.input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  border: 1px solid #b0bec5; /* gris celeste */
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #00bcd4;
+  box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2); /* cyan suave */
+}
+
+/* Botón */
+.button {
+  width: 100%;
+  padding: 12px;
+  background-color: #00bcd4; /* cyan suave */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #0097a7; /* cyan más oscuro */
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .form {
+    padding: 1.5rem;
+    margin: 1rem;
   }
-  
+
   .title {
-    color: #ff0000; 
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
-  
-  .input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
-  }
-  
-  .input:focus {
-    outline: none;
-    border-color: #ff0000;
-    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.1);
-  }
-  
-  .button {
-    width: 100%;
-    padding: 12px;
-    background-color: #ff0000; 
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .button:hover {
-    background-color: #cc0000;
-  }
-  
-  @media (max-width: 480px) {
-    .form {
-      padding: 1.5rem;
-      margin: 1rem;
-    }
-    
-    .title {
-      font-size: 1.5rem;
-    }
-  }*/
+}
