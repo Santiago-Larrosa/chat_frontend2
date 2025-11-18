@@ -104,7 +104,8 @@ function Informe({ user, onBack }) {
   //              FORMULARIO + ESTÉTICA ORIGINAL
   // ---------------------------------------------------------
 return (
-  <div ref={containerRef} className="container">
+  <div ref={containerRef} className="informe-root">
+  <div className="container">
 
     <h1>INFORME DE CONVIVENCIA</h1>
     <p>Gobierno de la Ciudad Autónoma de Buenos Aires<br />
@@ -419,13 +420,14 @@ return (
         )}
       </ul>
     </div>
-
+  </div>
   </div>
 );
 
 }
 
 export default Informe;
+
 
 
 
