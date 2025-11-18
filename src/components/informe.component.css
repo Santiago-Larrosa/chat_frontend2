@@ -9,6 +9,18 @@ body, html {
     padding: 0;
 }
 
+/* ANULA CUALQUIER FORM GLOBAL QUE LO AFECTE */
+.a4-form {
+    all: unset; /* BORRA TODOS LOS ESTILOS INDESEADOS */
+    display: block;
+}
+
+/* Y REACTIVAMOS SOLO LO QUE QUEREMOS */
+.a4-form {
+    width: 100%;
+}
+
+
 /* HOJA A4 SIMPLIFICADA */
 .container {
     width: 800px !important;           /* similar a hoja A4 */
