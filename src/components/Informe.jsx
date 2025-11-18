@@ -206,7 +206,6 @@ function Informe({ user, onBack }) {
             Imprimir
           </button>
         </div>
-      </form>
 
       {/* --- BUSQUEDA --- */}
       <div className="form-group" style={{ marginTop: '40px' }}>
@@ -247,4 +246,5 @@ function Informe({ user, onBack }) {
 }
 
 export default Informe;
+
 
