@@ -83,22 +83,64 @@ function Informe({ user, onBack }) {
   const imprimirInforme = () => window.print();
 
   // --- DETALLE ---
-  if (informeSeleccionado) {
-    const inf = informeSeleccionado;
-    return (
-      <div className="container">
-        <button className="print-button" onClick={() => setInformeSeleccionado(null)}>VOLVER</button>
-        <h2>Detalle del Informe</h2>
+ // --- DETALLE ---
+if (informeSeleccionado) {
+  const inf = informeSeleccionado;
 
-        {Object.entries(inf).map(([key, value]) => (
-          <div className="form-group" key={key}>
-            <label>{key}:</label>
-            <p>{String(value)}</p>
-          </div>
-        ))}
+  const labels = {
+    alumnoNombre: "Nombre del Alumno/a",
+    alumnoAnio: "Año",
+    alumnoDivision: "División",
+    descripcionAccion: "Descripción de la acción",
+    solicitudSancion: "Solicitud de sanción",
+    docenteNombre: "Nombre del docente",
+    docenteCargo: "Cargo del docente",
+    docenteFecha: "Fecha (Docente)",
+    docenteFirma: "Firma (Docente)",
+    descargoAlumno: "Descargo del Alumno/a",
+    informeConsejoAula: "Informe del Consejo de Aula",
+    informeConsejoConvivencia: "Informe del Consejo de Convivencia",
+    observaciones: "Observaciones",
+    instancia: "Instancia",
+    otraConsideracion: "Otra Consideración",
+    firmaDirectivo: "Firma Directivo",
+    fechaDirectivo: "Fecha Directivo",
+    notificacionAlumno: "Notificación al Alumno",
+    notificacionTutor: "Notificación al Tutor",
+    notificacionFecha: "Fecha de Notificación",
+  };
+
+  return (
+    <div className="informe-root">
+      <div className="container">
+
+        <button className="print-button" onClick={() => setInformeSeleccionado(null)}>
+          VOLVER
+        </button>
+
+        <h1>DETALLE DEL INFORME</h1>
+
+        {Object.entries(inf)
+          .filter(([key]) => !["_id", "__v", "createdAt", "updatedAt", "userId"].includes(key))
+          .map(([key, value]) => (
+            <div className="form-group" key={key} style={{ marginBottom: "20px" }}>
+              <label style={{ fontSize: "18px" }}>
+                {labels[key] ?? key}:
+              </label>
+              <p style={{ 
+                fontSize: "16px", 
+                marginTop: "5px", 
+                whiteSpace: "pre-line" 
+              }}>
+                {String(value || "")}
+              </p>
+            </div>
+          ))}
+
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   // ---------------------------------------------------------
   //              FORMULARIO + ESTÉTICA ORIGINAL
@@ -427,6 +469,7 @@ return (
 }
 
 export default Informe;
+
 
 
 
