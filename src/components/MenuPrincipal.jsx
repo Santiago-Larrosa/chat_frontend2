@@ -113,11 +113,7 @@
           </button>
         )}
 
-        {canManageReports && (
-          <button onClick={() => onNavigate('informes')}>
-            Gestionar Informes
-          </button>
-        )}
+       
         <button onClick={onLogout}>Cerrar Sesión</button>
       </div>
     </div>
@@ -125,6 +121,7 @@
 };
 
   export default MenuPrincipal;
+
 
 
 
