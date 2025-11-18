@@ -103,148 +103,329 @@ function Informe({ user, onBack }) {
   // ---------------------------------------------------------
   //              FORMULARIO + ESTÉTICA ORIGINAL
   // ---------------------------------------------------------
-  return (
-     <div ref={containerRef} className="container">
-      <h1>INFORME DE CONVIVENCIA</h1>
-      <p>Gobierno de la Ciudad Autónoma de Buenos Aires<br />
-        Ministerio de Educación<br />
-        E.T. Nº 35 D.E. 18, "Ing. Eduardo Latizna"</p>
+return (
+  <div ref={containerRef} className="container">
 
+    <h1>INFORME DE CONVIVENCIA</h1>
+    <p>Gobierno de la Ciudad Autónoma de Buenos Aires<br />
+      Ministerio de Educación<br />
+      E.T. Nº 35 D.E. 18, "Ing. Eduardo Latizna"</p>
+
+    {/* ⚠️ IMPORTANTE → agregar el <form> acá */}
+    <form onSubmit={handleGuardar}>
+
+      {/* ------------------------- ALUMNO ------------------------ */}
       <div className="form-group">
         <label>1.- El alumno/a:</label>
         <div className="inline-group">
-          <input type="text" className="input-line" placeholder="Nombre del alumno/a" />
-          <input type="text" className="input-line" placeholder="Año" />
-          <input type="text" className="input-line" placeholder="División" />
+          <input
+            type="text"
+            className="input-line"
+            name="alumnoNombre"
+            placeholder="Nombre del alumno/a"
+            value={formData.alumnoNombre}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            className="input-line"
+            name="alumnoAnio"
+            placeholder="Año"
+            value={formData.alumnoAnio}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            className="input-line"
+            name="alumnoDivision"
+            placeholder="División"
+            value={formData.alumnoDivision}
+            onChange={handleChange}
+          />
         </div>
       </div>
 
+      {/* ------------------------- ACCIÓN ------------------------ */}
       <div className="form-group">
         <label>2.- Ha realizado la acción que se describe a continuación:</label>
-        <textarea className="textarea-expand" onInput={autoGrow} placeholder="Describa la acción realizada"></textarea>
+        <textarea
+          className="textarea-expand"
+          name="descripcionAccion"
+          placeholder="Describa la acción realizada"
+          value={formData.descripcionAccion}
+          onChange={handleChange}
+        ></textarea>
       </div>
 
       <div className="form-group">
         <label>Transgrediendo Normas del Reglamento de Convivencia de la escuela.</label>
       </div>
 
+      {/* ------------------------- SANCIÓN ------------------------ */}
       <div className="form-group">
         <label>3.- Solicitud de sanción:</label>
-        <textarea className="textarea-expand" onInput={autoGrow} placeholder="Descripción de la sanción" />
+        <textarea
+          className="textarea-expand"
+          name="solicitudSancion"
+          placeholder="Descripción de la sanción"
+          value={formData.solicitudSancion}
+          onChange={handleChange}
+        ></textarea>
       </div>
 
+      {/* ------------------------- DOCENTE ------------------------ */}
       <div className="form-group">
         <label>Docente:</label>
         <div className="inline-group">
-          <input type="text" className="input-line" placeholder="Nombre del docente" />
-          <input type="text" className="input-line" placeholder="Cargo/Función" />
-          <input type="text" className="input-line" placeholder="Fecha" />
-          <input type="text" className="input-line" placeholder="Firma" />
+
+          <input
+            type="text"
+            className="input-line"
+            name="docenteNombre"
+            placeholder="Nombre del docente"
+            value={formData.docenteNombre}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            className="input-line"
+            name="docenteCargo"
+            placeholder="Cargo/Función"
+            value={formData.docenteCargo}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            className="input-line"
+            name="docenteFecha"
+            placeholder="Fecha"
+            value={formData.docenteFecha}
+            onChange={handleChange}
+          />
+
+          <input
+            type="text"
+            className="input-line"
+            name="docenteFirma"
+            placeholder="Firma"
+            value={formData.docenteFirma}
+            onChange={handleChange}
+          />
         </div>
       </div>
 
+      {/* ------------------------- DESCARGO ------------------------ */}
       <div className="form-group">
         <label>4.- Descargo del Alumno/a:</label>
-        <textarea className="textarea-expand" onInput={autoGrow} placeholder="Descargo del alumno/a" />
+        <textarea
+          className="textarea-expand"
+          name="descargoAlumno"
+          placeholder="Descargo del alumno/a"
+          value={formData.descargoAlumno}
+          onChange={handleChange}
+        ></textarea>
       </div>
 
+      {/* ------------------- CONSEJO DE AULA ---------------------- */}
       <div className="form-group">
         <label>5.- Informe de Consejo de Aula:</label>
-        <textarea className="textarea-expand" onInput={autoGrow} placeholder="Informe del Consejo de Aula" />
+        <textarea
+          className="textarea-expand"
+          name="informeConsejoAula"
+          placeholder="Informe del Consejo de Aula"
+          value={formData.informeConsejoAula}
+          onChange={handleChange}
+        ></textarea>
       </div>
 
+      {/* ------------------- CONSEJO DE CONVIVENCIA --------------- */}
       <div className="form-group">
         <label>6.- Informe de Consejo de Convivencia:</label>
-        <textarea className="textarea-expand" onInput={autoGrow} placeholder="Informe del Consejo de Convivencia" />
+        <textarea
+          className="textarea-expand"
+          name="informeConsejoConvivencia"
+          placeholder="Informe del Consejo de Convivencia"
+          value={formData.informeConsejoConvivencia}
+          onChange={handleChange}
+        ></textarea>
       </div>
 
+      {/* ------------------------- OBSERVACIONES ------------------------ */}
       <div className="form-group">
         <label>7.- Observaciones:</label>
-        <textarea className="textarea-expand" onInput={autoGrow} placeholder="Observaciones adicionales" />
+        <textarea
+          className="textarea-expand"
+          name="observaciones"
+          placeholder="Observaciones adicionales"
+          value={formData.observaciones}
+          onChange={handleChange}
+        ></textarea>
       </div>
 
+      {/* ------------------------- INSTANCIA ------------------------ */}
       <div className="form-group">
-        <label>8.- Se considera que corresponde (Indicar a continuación):</label>
+        <label>8.- Se considera que corresponde:</label>
+
         <div className="inline-checks">
-          <label><input type="radio" name="instancia" /> 1ª Instancia LEVE</label>
-          <label><input type="radio" name="instancia" /> 2ª Instancia GRAVE</label>
-          <label><input type="radio" name="instancia" /> 3ª Instancia MUY GRAVE</label>
+
+          <label>
+            <input
+              type="radio"
+              name="instancia"
+              value="LEVE"
+              checked={formData.instancia === "LEVE"}
+              onChange={handleChange}
+            /> 1ª Instancia LEVE
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="instancia"
+              value="GRAVE"
+              checked={formData.instancia === "GRAVE"}
+              onChange={handleChange}
+            /> 2ª Instancia GRAVE
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="instancia"
+              value="MUY GRAVE"
+              checked={formData.instancia === "MUY GRAVE"}
+              onChange={handleChange}
+            /> 3ª Instancia MUY GRAVE
+          </label>
+
         </div>
-      </div>
 
-      <div className="form-group">
         <label>Otra Consideración:</label>
-        <textarea className="textarea-expand" onInput={autoGrow} />
+        <textarea
+          className="textarea-expand"
+          name="otraConsideracion"
+          value={formData.otraConsideracion}
+          onChange={handleChange}
+        ></textarea>
       </div>
 
+      {/* ---------------------- FIRMA DIRECTIVO -------------------- */}
       <div className="form-group">
         <label>Firma Directivo:</label>
-        <input type="text" className="input-line small-input" />
-        <label>Fecha:</label>
-        <input type="text" className="input-line small-input" />
-      </div>
-
-      <div className="form-group">
-        <label>9.- Notificación:</label>
-        <label>Alumno:</label>
-        <input type="text" className="input-line small-input" />
-        <label>Padre/Madre/Tutor:</label>
-        <input type="text" className="input-line small-input" />
-        <label>Fecha:</label>
-        <input type="text" className="input-line small-input" />
-      </div>
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}
-
-        <div className="button-container">
-          <button type="submit" className="print-button" disabled={loading}>
-            {loading ? "Guardando..." : "Guardar en Base de Datos"}
-          </button>
-
-          <button type="button" className="print-button" onClick={imprimirInforme}>
-            Imprimir
-          </button>
-        </div>
-
-      {/* --- BUSQUEDA --- */}
-      <div className="form-group" style={{ marginTop: '40px' }}>
-        <h2>Búsqueda de Informes Guardados</h2>
 
         <input
-          className="input-line"
           type="text"
-          placeholder="Buscar por nombre..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ width: "100%" }}
+          className="input-line small-input"
+          name="firmaDirectivo"
+          value={formData.firmaDirectivo}
+          onChange={handleChange}
         />
 
-        {loadingSearch && <p>Buscando...</p>}
+        <label>Fecha:</label>
 
-        <ul style={{ listStyle: "none", paddingLeft: 0, marginTop: "20px" }}>
-          {informes.length > 0 ? (
-            informes.map(inf => (
-              <li key={inf._id} className="informe-list-item">
-                <div>
-                  <strong>{inf.alumnoNombre}</strong><br />
-                  <small>{new Date(inf.createdAt).toLocaleString()}</small>
-                </div>
-
-                <button className="print-button" onClick={() => setInformeSeleccionado(inf)}>
-                  Ver
-                </button>
-              </li>
-            ))
-          ) : (
-            <p>{searchTerm ? "No se encontraron informes." : "Escribe para buscar."}</p>
-          )}
-        </ul>
+        <input
+          type="text"
+          className="input-line small-input"
+          name="fechaDirectivo"
+          value={formData.fechaDirectivo}
+          onChange={handleChange}
+        />
       </div>
+
+      {/* ---------------------- NOTIFICACIÓN ---------------------- */}
+      <div className="form-group">
+        <label>9.- Notificación:</label>
+
+        <label>Alumno:</label>
+        <input
+          type="text"
+          className="input-line small-input"
+          name="notificacionAlumno"
+          value={formData.notificacionAlumno}
+          onChange={handleChange}
+        />
+
+        <label>Padre/Madre/Tutor:</label>
+        <input
+          type="text"
+          className="input-line small-input"
+          name="notificacionTutor"
+          value={formData.notificacionTutor}
+          onChange={handleChange}
+        />
+
+        <label>Fecha:</label>
+        <input
+          type="text"
+          className="input-line small-input"
+          name="notificacionFecha"
+          value={formData.notificacionFecha}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* ---------------------- MENSAJES ---------------------- */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
+
+      {/* ---------------------- BOTONES ---------------------- */}
+      <div className="button-container">
+        <button type="submit" className="print-button" disabled={loading}>
+          {loading ? "Guardando..." : "Guardar en Base de Datos"}
+        </button>
+
+        <button type="button" className="print-button" onClick={imprimirInforme}>
+          Imprimir
+        </button>
+      </div>
+
+    </form>
+
+    {/* ---------------------- BUSQUEDA ---------------------- */}
+    <div className="form-group" style={{ marginTop: '40px' }}>
+      <h2>Búsqueda de Informes Guardados</h2>
+
+      <input
+        className="input-line"
+        type="text"
+        placeholder="Buscar por nombre..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ width: "100%" }}
+      />
+
+      {loadingSearch && <p>Buscando...</p>}
+
+      <ul style={{ listStyle: "none", paddingLeft: 0, marginTop: "20px" }}>
+        {informes.length > 0 ? (
+          informes.map(inf => (
+            <li key={inf._id} className="informe-list-item">
+              <div>
+                <strong>{inf.alumnoNombre}</strong><br />
+                <small>{new Date(inf.createdAt).toLocaleString()}</small>
+              </div>
+
+              <button className="print-button" onClick={() => setInformeSeleccionado(inf)}>
+                Ver
+              </button>
+            </li>
+          ))
+        ) : (
+          <p>{searchTerm ? "No se encontraron informes." : "Escribe para buscar."}</p>
+        )}
+      </ul>
     </div>
-  );
+
+  </div>
+);
+
 }
 
 export default Informe;
+
 
 
