@@ -112,7 +112,7 @@ return (
       E.T. Nº 35 D.E. 18, "Ing. Eduardo Latizna"</p>
 
     {/* ⚠️ IMPORTANTE → agregar el <form> acá */}
-    <form onSubmit={handleGuardar}>
+    <form className="a4-form" onSubmit={handleGuardar}>
 
       {/* ------------------------- ALUMNO ------------------------ */}
       <div className="form-group">
@@ -426,6 +426,7 @@ return (
 }
 
 export default Informe;
+
 
 
 
