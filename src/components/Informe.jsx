@@ -1,3 +1,5 @@
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 // src/components/Informe.jsx
 import React, { useRef, useState, useEffect } from 'react';
 import { createInforme, getInformes } from '../api.js';
@@ -551,6 +553,7 @@ function Informe({ user, onBack }) {
 }
 
 export default Informe;
+
 
 
 
