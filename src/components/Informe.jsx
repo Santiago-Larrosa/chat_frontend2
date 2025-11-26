@@ -88,65 +88,77 @@ function Informe({ user, onBack }) {
 
   const imprimirInforme = () => window.print();
 
-  // --- ¡FUNCIÓN PDF ACTUALIZADA! ---
-  const descargarPDF = () => {
-    // Decide qué elemento convertir: el formulario o el detalle
-    const input = informeSeleccionado ? detalleRef.current : formRef.current;
-    if (!input) {
-      console.error("No se encontró el elemento para convertir a PDF.");
-      return;
-    }
+const descargarPDF = () => {
+  // Decide qué elemento convertir: el formulario o el detalle
+  const input = informeSeleccionado ? detalleRef.current : formRef.current;
+  if (!input) {
+    console.error("No se encontró el elemento para convertir a PDF.");
+    return;
+  }
 
-    // Ocultar temporalmente los botones para que no salgan en el PDF
-    const botones = input.querySelector('.button-container');
-    if (botones) botones.style.display = 'none';
+  // Ocultar temporalmente los botones para que no salgan en el PDF
+  const botones = input.querySelector('.button-container');
+  if (botones) botones.style.display = 'none';
 
-    html2canvas(input, { 
-      scale: 2, // Mejora la resolución
-      useCORS: true 
+  html2canvas(input, {
+    scale: 2,
+    useCORS: true
+  })
+    .then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+
+      const pageWidth = pdf.internal.pageSize.getWidth();   // Ancho total A4
+      const pageHeight = pdf.internal.pageSize.getHeight(); // Alto total A4
+
+      // ==== MÁRGENES (en mm) ====
+      const marginLeft = 15;
+      const marginRight = 15;
+      const marginTop = 15;
+      const marginBottom = 15;
+
+      const usableWidth = pageWidth - marginLeft - marginRight; // ancho útil
+
+      // Escalamos la imagen para que entre en el ancho útil
+      const imgWidth = usableWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      const pageHeightUsable = pageHeight - marginTop - marginBottom;
+
+      let heightLeft = imgHeight;
+      let position = marginTop;
+
+      // Primera página
+      pdf.addImage(imgData, 'PNG', marginLeft, position, imgWidth, imgHeight);
+      heightLeft -= pageHeightUsable;
+
+      // Páginas siguientes (si el contenido es más largo que una hoja)
+      while (heightLeft > 0) {
+        pdf.addPage();
+        position = heightLeft - imgHeight + marginTop; // desplazar hacia arriba
+        pdf.addImage(imgData, 'PNG', marginLeft, position, imgWidth, imgHeight);
+        heightLeft -= pageHeightUsable;
+      }
+
+      // Nombre de archivo dinámico
+      const nombreAlumno = informeSeleccionado
+        ? informeSeleccionado.alumnoNombre
+        : formData.alumnoNombre;
+      const safeName = (nombreAlumno || 'informe')
+        .replace(/[^a-z0-9]/gi, '_')
+        .toLowerCase();
+
+      pdf.save(`informe_convivencia_${safeName}.pdf`);
+
+      // Volver a mostrar los botones
+      if (botones) botones.style.display = 'block';
     })
-      .then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfPageWidth = pdf.internal.pageSize.getWidth();
-        const pdfPageHeight = pdf.internal.pageSize.getHeight();
-        
-        const canvasWidth = canvas.width;
-        const canvasHeight = canvas.height;
-        
-        const ratio = pdfPageWidth / canvasWidth;
-        const canvasPageHeight = canvasHeight * ratio;
-        
-        let heightLeft = canvasPageHeight;
-        let position = 0; // Margen superior
+    .catch(err => {
+      console.error("Error al generar PDF:", err);
+      if (botones) botones.style.display = 'block';
+    });
+};
 
-        pdf.addImage(imgData, 'PNG', 0, position, pdfPageWidth, canvasPageHeight);
-        heightLeft -= pdfPageHeight;
-
-        while (heightLeft > 0) {
-          position = heightLeft - canvasPageHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, pdfPageWidth, canvasPageHeight);
-          heightLeft -= pdfPageHeight;
-        }
-        
-        // Crear un nombre de archivo dinámico
-        const nombreAlumno = informeSeleccionado 
-          ? informeSeleccionado.alumnoNombre 
-          : formData.alumnoNombre;
-        const safeName = (nombreAlumno || 'informe').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        
-        pdf.save(`informe_convivencia_${safeName}.pdf`);
-
-        // Volver a mostrar los botones
-        if (botones) botones.style.display = 'block';
-
-      })
-      .catch(err => {
-        console.error("Error al generar PDF:", err);
-        if (botones) botones.style.display = 'block';
-      });
-  };
   // --- FIN DE NUEVA FUNCIÓN ---
 
   // --- DETALLE ---
@@ -553,6 +565,7 @@ function Informe({ user, onBack }) {
 }
 
 export default Informe;
+
 
 
 
