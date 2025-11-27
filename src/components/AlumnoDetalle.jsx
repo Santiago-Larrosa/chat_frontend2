@@ -175,6 +175,6 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
 }
 
 export default AlumnoDetalle;
-export default AlumnoDetalle;
+
 
 
