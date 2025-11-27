@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 // ¡Importamos la nueva función de la API!
 import { addObservacion } from '../api.js'; 
 import './AuthForms.css'; // Usamos el mismo CSS
@@ -6,6 +8,9 @@ import './AuthForms.css'; // Usamos el mismo CSS
 function AlumnoDetalle({ alumno, onBack, onUpdate }) {
     const [nuevaObs, setNuevaObs] = useState({ titulo: '', texto: '' });
     const [error, setError] = useState('');
+
+    // --- 3. Crear el Ref para el contenedor principal ---
+    const pdfRef = useRef();
 
     const handleObsChange = (e) => {
         setNuevaObs({ ...nuevaObs, [e.target.name]: e.target.value });
@@ -46,16 +51,89 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
         });
     };
 
+    // --- 4. NUEVA FUNCIÓN DE DESCARGA PDF ---
+    const descargarPDFAlumnos = () => {
+        const input = pdfRef.current;
+        if (!input) return;
+
+        // Ocultar botones y formulario de "Agregar Observación"
+        const btnVolver = input.querySelector('.btn-volver-pdf');
+        const btnDescargar = input.querySelector('.btn-descargar-pdf');
+        const formObs = input.querySelector('.observacion-form');
+
+        if (btnVolver) btnVolver.style.display = 'none';
+        if (btnDescargar) btnDescargar.style.display = 'none';
+        if (formObs) formObs.style.display = 'none';
+
+        html2canvas(input, { 
+            scale: 2, // Mejorar resolución
+            useCORS: true 
+        })
+          .then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfPageWidth = pdf.internal.pageSize.getWidth();
+            const pdfPageHeight = pdf.internal.pageSize.getHeight();
+            
+            const canvasWidth = canvas.width;
+            const canvasHeight = canvas.height;
+            
+            const ratio = pdfPageWidth / canvasWidth;
+            const canvasPageHeight = canvasHeight * ratio;
+            
+            let heightLeft = canvasPageHeight;
+            let position = 0; 
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfPageWidth, canvasPageHeight);
+            heightLeft -= pdfPageHeight;
+
+            while (heightLeft > 0) {
+              position = heightLeft - canvasPageHeight;
+              pdf.addPage();
+              pdf.addImage(imgData, 'PNG', 0, position, pdfPageWidth, canvasPageHeight);
+              heightLeft -= pdfPageHeight;
+            }
+            
+            const safeName = (alumno.nombre || 'alumno').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            pdf.save(`observaciones_${safeName}.pdf`);
+
+            // Volver a mostrar botones y formulario
+            if (btnVolver) btnVolver.style.display = 'block';
+            if (btnDescargar) btnDescargar.style.display = 'block';
+            if (formObs) formObs.style.display = 'block';
+          })
+          .catch(err => {
+            console.error("Error al generar PDF:", err);
+            // Asegurarse de mostrar todo de nuevo si hay error
+            if (btnVolver) btnVolver.style.display = 'block';
+            if (btnDescargar) btnDescargar.style.display = 'block';
+            if (formObs) formObs.style.display = 'block';
+          });
+    };
+
     return (
-        <div className="registro-container">
-            <button onClick={onBack}>Volver a la lista</button>
+        // --- 5. Añadir el ref al div principal ---
+        <div className="registro-container" ref={pdfRef}>
+            {/* --- 6. Añadir botones y clases para ocultarlos --- */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
+                <button onClick={onBack} className="btn-volver-pdf">
+                    Volver a la lista
+                </button>
+                <button onClick={descargarPDFAlumnos} className="btn-descargar-pdf">
+                    Descargar PDF
+                </button>
+            </div>
+            
             <h2>Detalle de: {alumno.nombre}</h2>
-            <p><strong>Curso:</strong> {alumno.curso}</p>
-            <p><strong>DNI:</strong> {alumno.dni}</p>
-            <p><strong>Edad:</strong> {alumno.edad}</p>
-            <p><strong>Dirección:</strong> {alumno.direccion}</p>
-            <p><strong>Teléfono:</strong> {alumno.telefono}</p>
-            <p><strong>Tutor:</strong> {alumno.tutor}</p>
+            
+            <div className="alumno-info">
+                <p><strong>Curso:</strong> {alumno.curso}</p>
+                <p><strong>DNI:</strong> {alumno.dni}</p>
+                <p><strong>Edad:</strong> {alumno.edad}</p>
+                <p><strong>Dirección:</strong> {alumno.direccion}</p>
+                <p><strong>Teléfono:</strong> {alumno.telefono}</p>
+                <p><strong>Tutor:</strong> {alumno.tutor}</p>
+            </div>
             
             <hr />
 
@@ -64,9 +142,7 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
                 {alumno.observaciones && alumno.observaciones.length > 0 ? (
                     alumno.observaciones.map((obs, index) => (
                         <li key={index} className="observacion-item">
-                            {/* --- AQUÍ ESTÁ EL CAMBIO --- */}
                             <strong>{obs.titulo}</strong> 
-                            {/* Usamos la nueva función para formatear la fecha */}
                             <span className="observacion-fecha">({formatFecha(obs.fecha)})</span>
                             <p>{obs.texto}</p>
                         </li>
@@ -76,7 +152,8 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
                 )}
             </ul>
 
-            <form onSubmit={handleAddObservacion} className="registro-form">
+            {/* --- 7. Añadir clase para ocultar el formulario --- */}
+            <form onSubmit={handleAddObservacion} className="registro-form observacion-form">
                 <h4>Agregar Nueva Observación</h4>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <input
@@ -98,4 +175,6 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
 }
 
 export default AlumnoDetalle;
+export default AlumnoDetalle;
+
 
