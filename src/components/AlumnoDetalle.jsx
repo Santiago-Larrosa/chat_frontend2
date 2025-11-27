@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState , useRef} from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 // ¡Importamos la nueva función de la API!
@@ -175,6 +175,7 @@ function AlumnoDetalle({ alumno, onBack, onUpdate }) {
 }
 
 export default AlumnoDetalle;
+
 
 
 
